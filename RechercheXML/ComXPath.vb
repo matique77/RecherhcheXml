@@ -22,7 +22,7 @@
 ''' Elle permet d'encontainer les éléments importants de la commande passée. 
 ''' </summary>
 Public Class ComXPath
-
+    'test
     Public Sub New(recherhe As String)
         Throw New NotImplementedException("À faire..")
     End Sub
