@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8B1EC08C-D04F-4CA7-BB0B-DBB9DB2A4971}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>RechercheXML.Module1</StartupObject>
+    <StartupObject>RechercheXML.Principal</StartupObject>
     <RootNamespace>RechercheXML</RootNamespace>
     <AssemblyName>RechercheXML</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -69,7 +69,11 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Module1.vb" />
+    <Compile Include="Attribut.vb" />
+    <Compile Include="ComXPath.vb" />
+    <Compile Include="DocumentXml.vb" />
+    <Compile Include="ElementXml.vb" />
+    <Compile Include="Principal.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -85,6 +89,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="UtilitaireChargement.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
