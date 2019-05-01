@@ -56,7 +56,6 @@ Public Structure Attribut(Of T)
 
 #End Region
 
-
 #Region "Constructeur"
 
     Public Sub New(nom As String, valeur As T)
@@ -65,6 +64,4 @@ Public Structure Attribut(Of T)
     End Sub
 
 #End Region
-
-
 End Structure

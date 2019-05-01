@@ -2,8 +2,8 @@
 '=================================================================================================
 '  Nom du fichier : UtilitaireChargement.vb
 '         Module  : UtilitaireChargement
-' Nom de l'auteur : ???
-'            Date : 30/04/19
+' Nom de l'auteur : Mathieu Pelletier
+'            Date : 01/04/19
 '=================================================================================================
 
 ''' <summary>
@@ -23,29 +23,53 @@ Module UtilitaireChargment
         If (chemin Is Nothing) Then
             Throw New ArgumentNullException("Un chemin ne peut référé à rien.")
         End If
+        Dim doc As XmlDocument = New XmlDocument()
+        'Try
+        '    doc.LoadXml(chemin)
+        'Catch
+        '    Throw New ArgumentException("Le fichier chercher n'existe pas ou le chemin est invalide.")
+        'End Try
+        Dim maRacine As ElementXml
+        doc.Load(chemin)
+        Dim racine As XmlElement = doc.DocumentElement
+        maRacine = New ElementXml(racine.Name, AttributesVersList(racine.Attributes), XmlChildVersClassRecursif(racine.ChildNodes))
+        Dim monDocument As DocumentXml = New DocumentXml(maRacine)
+        Return monDocument
+    End Function
 
-        'On vérifie que le chemin pointe vers un fichier xml valide.
+    ''' <summary>
+    ''' Transforme une collection d'attribute XML en liste d'attribut.
+    ''' </summary>
+    ''' <param name="maCollection">La collection d'attribut du fichier</param>
+    ''' <returns>La liste des attributes transformer en attribut.</returns>
+    Private Function AttributesVersList(maCollection As XmlAttributeCollection) As List(Of Attribut(Of String))
+        Dim listeRetour = New List(Of Attribut(Of String))
+        For Each attribute As XmlAttribute In maCollection
+            listeRetour.Add(New Attribut(Of String)(attribute.Name, attribute.Value))
+        Next
+        Return listeRetour
+    End Function
 
-        '!Important : Utilisation de la  classe XmlDocument pour lire les informations du fichier. 
-        Dim docCharger As XmlDocument = New XmlDocument()
-
-        'Si une exception est lancé on lance nous même une autre exception plus spécifique à la classe. .  
-        Try
-            docCharger.LoadXml(chemin)
-        Catch
-            Throw New ArgumentException("Le fichier chercher n'existe pas ou le chemin est invalide.")
-        End Try
-
-        'Déclaration du DocumentXml retourné. 
-        Dim docXml As DocumentXml
-
-
-
-        '!!!!Il faut parcourrir l'entièreté du document xml et ajouter chacun des noeuds. 
-
-        Throw New NotImplementedException("À faire..")
-
-
+    ''' <summary>
+    ''' Transforme chaque noeud XML en ElementXml. 
+    ''' </summary>
+    ''' <param name="maCollection">la collection Xml des noeuds</param>
+    ''' <returns>retourne une liste d'Element Xml</returns>
+    Private Function XmlChildVersClassRecursif(maCollection As XmlNodeList) As List(Of ElementXml)
+        Dim listeRetour = New List(Of ElementXml)
+        If maCollection Is Nothing OrElse maCollection.Count = 0 Then
+            Return listeRetour
+        End If
+        Dim elem As XmlElement = TryCast(maCollection.Item(0), XmlElement)
+        If elem Is Nothing Then
+            Return listeRetour
+        End If
+        
+        For Each element As XmlElement In maCollection
+            Dim nouvelElement As ElementXml = New ElementXml(element.Name, AttributesVersList(element.Attributes), XmlChildVersClassRecursif(element.ChildNodes))
+            listeRetour.Add(nouvelElement)
+        Next
+        Return listeRetour
     End Function
 
 End Module
