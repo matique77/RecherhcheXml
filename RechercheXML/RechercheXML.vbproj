@@ -70,7 +70,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attribut.vb" />
-    <Compile Include="ComXPath.vb" />
+    <Compile Include="CommandesX\CommandeX.vb" />
+    <Compile Include="CommandesX\CommandeXDouble.vb" />
+    <Compile Include="CommandesX\CommandeXEtoile.vb" />
+    <Compile Include="CommandesX\CommandeXSimple.vb" />
+    <Compile Include="CommandesX\ExprXPath.vb" />
     <Compile Include="DocumentXml.vb" />
     <Compile Include="ElementXml.vb" />
     <Compile Include="Principal.vb" />
@@ -116,5 +120,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

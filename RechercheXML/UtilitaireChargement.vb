@@ -69,7 +69,7 @@ Module UtilitaireChargement
 
         For Each element As XmlElement In maCollection
             Dim nouvelElement As ElementXml
-            If (element.HasChildNodes AndAlso Not element.FirstChild.HasChildNodes) Then
+            If (element.ChildNodes.Count = XmlNodeType.Text) Then
                 nouvelElement = New ElementXml(element.Name, AttributesVersList(element.Attributes), element.InnerText)
             Else
                 nouvelElement = New ElementXml(element.Name, AttributesVersList(element.Attributes), XmlChildVersClassRecursif(element.ChildNodes))
