@@ -53,7 +53,7 @@ Public Class DocumentXml
 
     Public ReadOnly Property NbAttributs As Integer
         Get
-           '***************** FAIRE DEKOI DE MIEU EVENTUELLEMENT ,MAIS JPENSE QUE LA METHODE PX ETRE UTILSE DONC JAL MODIFIE PAS TT SUITE
+            '***************** FAIRE DEKOI DE MIEU EVENTUELLEMENT ,MAIS JPENSE QUE LA METHODE PX ETRE UTILSE DONC JAL MODIFIE PAS TT SUITE
             Dim liste As List(Of Attribut(Of String)) = New List(Of Attribut(Of String))
             Dim resultat As List(Of Attribut(Of String)) = ListerAttributsEnProfondeurRec(Racine, liste)
             Return resultat.Count
@@ -91,12 +91,13 @@ Public Class DocumentXml
 
 #Region "Méthodes"
 
+#Region "Méthodes privées"
     ''' <summary>
-    ''' Permet de mettre la l'arbre en ordre Prefix dans une liste pour l'affichage.
+    ''' Permet de mettre l'arbre en ordre Prefix dans une liste pour l'affichage.
     ''' </summary>
     ''' <param name="noeudCourant">Le nœud ou démarrer le parcour de l'arbre.</param>
     ''' <returns>retourne une liste d'ElementXml</returns>
-#Region "Méthodes publics "
+
     Private Function ListerEnProfondeurPrefixRec(noeudCourant As ElementXml) As List(Of ElementXml)
         Dim liste As List(Of ElementXml) = New List(Of ElementXml)({noeudCourant})
         If noeudCourant Is Nothing Then
@@ -123,6 +124,28 @@ Public Class DocumentXml
         End If
     End Function
 
+
+    Private Function ListerEnStrRec(noeudCourant As ElementXml, nbTab As Integer) As String
+
+        'Si enfant contient du texte : 
+        If (noeudCourant.ContenuTextuel IsNot Nothing) Then
+            'On ajoute comme contenu textuel 
+            Return StrDup(nbTab, vbTab) & noeudCourant.EnBalise() & " " & noeudCourant.ContenuTextuel & " " _
+                        & noeudCourant.EnBalise(True) & vbCrLf
+        Else
+            Dim strBalise As String = StrDup(nbTab, vbTab) & noeudCourant.EnBalise() & vbCrLf
+            nbTab += 1
+            'On parcourt les enfants si il y en a. 
+            For Each sousElem As ElementXml In noeudCourant.ElemEnfants
+                strBalise &= ListerEnStrRec(sousElem, nbTab)
+            Next
+            nbTab -= 1
+            'On ajoute la balise de fermeture 
+            strBalise &= StrDup(nbTab, vbTab) & noeudCourant.EnBalise(True) & vbCrLf
+            Return strBalise
+        End If
+    End Function
+
     Private Function CompterProfondeur(noeudCourant As ElementXml, num As Integer) As Integer
         Dim valeurMax = num
         If noeudCourant Is Nothing Then
@@ -137,12 +160,34 @@ Public Class DocumentXml
         End If
         Return valeurMax
     End Function
-#End Region
 
-#Region "Méthodes privées"
 
 #End Region
 
+#Region "Méthodes publics "
+
+
+    ''' <summary>
+    ''' Permet de récupérer les informations du document sous forme de chaine de caractère.
+    ''' </summary>
+    ''' <returns>Une chaine de caractère représentant les statistiques du document.</returns>
+    Public Function ObtenirStats() As String
+        Return String.Format("Le nom de la racine est : {0}" & vbCrLf &
+                             "le nombre d'élément du document est : {1}" & vbCrLf &
+                             "Le nombre d'attributs est : {2}" & vbCrLf &
+                             "La profondeur du document est : {3}", Me.Racine.Nom, Me.NbElements, Me.NbAttributs, Me.Profondeur)
+    End Function
+
+
+    ''' <summary>
+    ''' Affiche le document XMl sous une forme lisible en chaine de caractère. 
+    ''' </summary>
+    ''' <returns>Une chaine de caractère rerpésentant chacun des noeuds du document.</returns>
+    Public Overrides Function ToString() As String
+        Return Me.ListerEnStrRec(Me.Racine, 0)
+    End Function
+
+#End Region
 #End Region
 
 

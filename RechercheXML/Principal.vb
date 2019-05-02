@@ -31,13 +31,12 @@ Module Principal
                         monDoc = ChargerFichierXml(nomFichier)
                     End If
                 Case "2"
-
+                    Console.Clear()
+                    Console.WriteLine(monDoc.ToString())
+                    Console.ReadLine()
                 Case "3"
                     Console.Clear()
-                    Console.WriteLine("Le nom de la racine est {0}", monDoc.Racine.Nom)
-                    Console.WriteLine("le nombre d'élément du document est : {0}", monDoc.NbElements)
-                    Console.WriteLine("Le nombre d'attributs est {0}", monDoc.NbAttributs)
-                    Console.WriteLine("La profondeur du document est {0}", monDoc.Profondeur)
+                    Console.WriteLine(monDoc.ObtenirStats())
                     Console.ReadLine()
                 Case "4"
 

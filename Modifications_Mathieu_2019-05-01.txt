@@ -1,0 +1,17 @@
+-----Liste des Ajouts/Modifications----
+
+
+Notes : 
+->Il faut revoir la classe ElementXml pour mettre certains attributs ReadOnly. 
+->On peut modifier un élément Xml, mais on ne peut pas lui ajouter des sous-éléments si il contient du contenu textuel
+et vice-versa. 
+
+Majeures : 
+
+1-Affichage du document par le biais de la méthode ToString de DocumentXML. 
+
+Mineures : 
+
+1-Ajout d'une méthode ObtenirStats de type public dans la classe DocumentXml qui retourne un string contenant les statistiques. 
+
+2- 

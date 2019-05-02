@@ -9,7 +9,7 @@
 ''' <summary>
 ''' Ensemble de méthodes utiles au chargement des fichier XML.
 ''' </summary>
-Module UtilitaireChargment
+Module UtilitaireChargement
 
     ''' <summary>
     ''' Permet de charger un fichier xml et de le sérialisé 
@@ -24,11 +24,13 @@ Module UtilitaireChargment
             Throw New ArgumentNullException("Un chemin ne peut référé à rien.")
         End If
         Dim doc As XmlDocument = New XmlDocument()
-        'Try
-        '    doc.LoadXml(chemin)
-        'Catch
-        '    Throw New ArgumentException("Le fichier chercher n'existe pas ou le chemin est invalide.")
-        'End Try
+
+        Try
+            doc.Load(chemin)
+        Catch e As XmlException
+            Throw New ArgumentException("Le fichier chercher n'existe pas ou le chemin est invalide.")
+        End Try
+
         Dim maRacine As ElementXml
         doc.Load(chemin)
         Dim racine As XmlElement = doc.DocumentElement
@@ -64,9 +66,14 @@ Module UtilitaireChargment
         If elem Is Nothing Then
             Return listeRetour
         End If
-        
+
         For Each element As XmlElement In maCollection
-            Dim nouvelElement As ElementXml = New ElementXml(element.Name, AttributesVersList(element.Attributes), XmlChildVersClassRecursif(element.ChildNodes))
+            Dim nouvelElement As ElementXml
+            If (element.HasChildNodes AndAlso Not element.FirstChild.HasChildNodes) Then
+                nouvelElement = New ElementXml(element.Name, AttributesVersList(element.Attributes), element.InnerText)
+            Else
+                nouvelElement = New ElementXml(element.Name, AttributesVersList(element.Attributes), XmlChildVersClassRecursif(element.ChildNodes))
+            End If
             listeRetour.Add(nouvelElement)
         Next
         Return listeRetour

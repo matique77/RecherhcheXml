@@ -7,9 +7,10 @@
 '=================================================================================================
 
 
+
 ''' <summary>
 ''' Représente un élément XML avec son nom,
-''' ses attributs XML, le texte qu'il contient et ses sous-attributs. 
+''' ses attributs XML, le texte qu'il contient ou ses sous-éléments. 
 ''' </summary>
 Public Class ElementXml
 
@@ -35,6 +36,7 @@ Public Class ElementXml
     ''' Sinon, initialisé à Nothing. 
     ''' </summary>
     Private _contenuTextuel As String
+
 
     ''' <summary>
     ''' Nombre d'éléments enfants, s'il en contient.  
@@ -119,6 +121,9 @@ Public Class ElementXml
         End Set
     End Property
 
+
+
+
     ''' <summary>
     ''' Permet d'accéder aux nombre d'éléments enfants. 
     ''' </summary>
@@ -129,23 +134,26 @@ Public Class ElementXml
         End Get
     End Property
 
+
+
 #End Region
 
 #Region "Constructeur"
-
     ''' <summary>
     ''' Constructeur de base.
     ''' Crée un élément XML sans enfant et sans contenu textuel. 
     ''' </summary>
     ''' <param name="nom">Le nom de l'élément.</param>
     ''' <param name="listeAttribut">La liste des attributs.</param>
-    Public Sub New(nom As String, listeAttribut As List(Of Attribut(Of String)))
+    Private Sub New(nom As String, listeAttribut As List(Of Attribut(Of String)))
         Me.Nom = nom
         Me.Attributs = listeAttribut
+        Me.ContenuTextuel = Nothing
+        Me.ElemEnfants = New List(Of ElementXml)
     End Sub
 
     ''' <summary>
-    ''' Constructeur par permettant de créer un "ElementXml" contenant 
+    ''' Constructeur paramétré permettant de créer un "ElementXml" contenant 
     ''' un contenu textuel. 
     ''' </summary>
     ''' <param name="nom">Le nom de l'élément.</param>
@@ -154,7 +162,7 @@ Public Class ElementXml
     Public Sub New(nom As String, listeAttributs As List(Of Attribut(Of String)), contenuTextuel As String)
         Me.New(nom, listeAttributs)
         Me.ContenuTextuel = contenuTextuel
-        Me.ElemEnfants = Nothing
+        Me.ElemEnfants = New List(Of ElementXml)
     End Sub
 
     ''' <summary>
@@ -173,6 +181,26 @@ Public Class ElementXml
 #End Region
 
 #Region "Méthodes"
+
+    ''' <summary>
+    ''' Récupère une représentation de la balise sous forme de chaine de caractère. 
+    ''' </summary>
+    ''' <param name="estFermante">Indique si la balise est une balise d'ouverture ou de fermeture</param>
+    ''' <returns>
+    ''' Une chaine de caractère représentant une balise ouvrante ou fermante. 
+    ''' </returns>
+    Public Function EnBalise(Optional estFermante As Boolean = False) As String
+        If (Not estFermante) Then
+            Dim strAtt As String = ""
+            For Each att As Attribut(Of String) In Me.Attributs
+                strAtt &= att.ToString() & " "
+            Next
+            Return String.Format("<{0} {1}>", Me.Nom, strAtt)
+        Else
+            Return String.Format("</{0}>", Me.Nom)
+        End If
+    End Function
+
     ''' <summary>
     ''' Retourne un string comprenant le nom, les attributs et le nombre de sous-éléments de 
     ''' l'ÉlémentXml. 
@@ -188,5 +216,6 @@ Public Class ElementXml
         Return String.Format(" Nom de l'élément : {0}, Attributs : {1}, Nombre de sous-éléments : {2} ", Me.Nom,
                              strAttributs, Me.NbElementsEnfants)
     End Function
+
 #End Region
 End Class

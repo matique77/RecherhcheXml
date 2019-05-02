@@ -38,6 +38,8 @@ Public Structure Attribut(Of T)
             If value = "" Then
                 Throw New ArgumentException("Le nom de l'attribut ne peut être vide.")
             End If
+
+            Me._nom = value
         End Set
     End Property
 
@@ -62,6 +64,21 @@ Public Structure Attribut(Of T)
         Me.Nom = nom
         Me.Valeur = valeur
     End Sub
+
+#End Region
+
+#Region "Méthodes"
+    ''' <summary>
+    ''' Récupère une chaîne de caractère représentant un attribut. 
+    ''' </summary>
+    ''' <returns>Une chaine de caractère représentant l'attribut.</returns>
+    Public Overrides Function ToString() As String
+        Dim valeur As String = If(TypeOf Me.Valeur Is String,
+            String.Format("""{0}""", Me.Valeur),
+            Me.Valeur.ToString())
+
+        Return String.Format("{0}={1}", Me.Nom, valeur)
+    End Function
 
 #End Region
 End Structure
