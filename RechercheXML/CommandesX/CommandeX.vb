@@ -20,6 +20,14 @@ Public MustInherit Class CommandeX
 
     End Property
 
+    Public Property Filtre As String
+    Get
+            Return Me._filtre
+    End Get
+        Set(value As String)
+            Me._filtre = value
+        End Set
+    End Property
 
 #End Region
 

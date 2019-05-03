@@ -39,7 +39,8 @@ Module Principal
                     Console.WriteLine(monDoc.ObtenirStats())
                     Console.ReadLine()
                 Case "4"
-
+                    Dim unExpressionXpath As ExprXPath = New ExprXPath("/recherche[@test2333]/xml/test[@test2333]") 
+                    Dim fml As Integer = 0
                 Case "5"
 
             End Select

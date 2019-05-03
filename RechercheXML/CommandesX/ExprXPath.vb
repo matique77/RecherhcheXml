@@ -14,41 +14,62 @@ Public Class ExprXPath
 
 
 #Region "Constantes"
-    Private Const symbSlsh As String = "/"
-    Private Const symbSlashEtoile As String = "/*"
-    Private Const symDoubleSlash As String = "//"
+    Private Const symbSlsh As Char = "/"c
+    Private Const Etoile As Char = "*"c
+    Private Const filtre As Char = "["c
 
-    Private Const filtre As String = "[@x=y]"
+    Private Const filtre2 As String = "[@x=y]"
 #End Region
 
 #Region "Attributs"
     Private _fileDeCommande As Queue(Of CommandeX)
+
 #End Region
 
 #Region "Propriétés"
-    Public Property FileDeCommande As Queue(Of CommandeX)
-        Get
-            Return Me._fileDeCommande
-        End Get
-        Set(value As Queue(Of CommandeX))
-            Me._fileDeCommande = value
-        End Set
-    End Property
+
+
+    Public Property FileString As Queue(Of String)
+
 #End Region
 
-    Public Sub New(recherhe As String)
+    Public Sub New(recherche As String)
         'On doit décomposer le string en commandes.
         'Pour ce faire, on récupère un tableau de string où les éléments sont séparés par les symbole.
         'On parcourt le string : 
+        Me._fileString = New Queue(Of String)
+        Dim fileString = New Queue(Of String)
+        Dim tabChar() As Char = recherche.ToCharArray
+        Dim unstring As String = ""
+        Dim i As Integer = 0
+        While i < tabChar.Length
+            Select Case tabChar(i)
+                'Si c'est un symbole special on regarde si qu'il y a apres sinon ont ajoute le char au string a empiller.
+                Case symbSlsh
+                    If unstring IsNot "" Then
+                        Me.FileString.Enqueue(unstring)
+                        unstring = ""
+                        unstring = unstring.Insert(unstring.Length, tabChar(i))
+                    End If
+                    If i <> tabChar.Length - 1 Then
+                        'Si ce n'est pas la fin
+                        Select Case tabChar(i + 1)
+                            'Ont regarde si le symbole suivant est une barre oblique sinon ont ajoute le string a empiller a la pile.
+                            Case symbSlsh
+                                unstring = unstring.Insert(unstring.Length, tabChar(i))
+                                i += 1
+                        End Select
+                        If i = 0 Then
+                            unstring = unstring.Insert(unstring.Length, tabChar(i))
+                        End If
+                    End If
+                Case Else
+                    unstring = unstring.Insert(unstring.Length, tabChar(i))
+            End Select
+            i += 1
+        End While
+        Me.FileString.Enqueue(unstring)
 
-
-        'Dim commandeX As CommandeX
-        'For i = 0 To recherhe.Count - 1
-        '    If (recherhe(i) = symbSlsh) Then
-        '        'Dim commandeXd As CommandeXDouble = New CommandeXDouble()
-        '        Me.FileDeCommande.Enqueue(commandeXd)
-        '    End If
-        'Next
     End Sub
 
 #Region "Méthodes"
