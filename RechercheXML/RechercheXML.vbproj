@@ -71,10 +71,10 @@
   <ItemGroup>
     <Compile Include="Attribut.vb" />
     <Compile Include="CommandesX\CommandeX.vb" />
-    <Compile Include="CommandesX\CommandeXDouble.vb" />
-    <Compile Include="CommandesX\CommandeXEtoile.vb" />
     <Compile Include="CommandesX\CommandeXSimple.vb" />
     <Compile Include="CommandesX\ExprXPath.vb" />
+    <Compile Include="CommandeXDouble.vb" />
+    <Compile Include="CommandeXEtoile.vb" />
     <Compile Include="DocumentXml.vb" />
     <Compile Include="ElementXml.vb" />
     <Compile Include="Principal.vb" />
@@ -94,6 +94,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="UtilitaireChargement.vb" />
+    <Compile Include="UtilitaireRegx.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

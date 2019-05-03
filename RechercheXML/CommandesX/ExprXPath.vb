@@ -19,6 +19,8 @@ Public Class ExprXPath
     Private Const symDoubleSlash As String = "//"
 
     Private Const filtre As String = "[@x=y]"
+
+    Public Const RegxFiltre As String = ".+=("".+ ""|\d)"
 #End Region
 
 #Region "Attributs"
@@ -37,18 +39,8 @@ Public Class ExprXPath
 #End Region
 
     Public Sub New(recherhe As String)
-        'On doit décomposer le string en commandes.
-        'Pour ce faire, on récupère un tableau de string où les éléments sont séparés par les symbole.
-        'On parcourt le string : 
+        'On va juste creer une nouvelle expressionSimple.
 
-
-        'Dim commandeX As CommandeX
-        'For i = 0 To recherhe.Count - 1
-        '    If (recherhe(i) = symbSlsh) Then
-        '        'Dim commandeXd As CommandeXDouble = New CommandeXDouble()
-        '        Me.FileDeCommande.Enqueue(commandeXd)
-        '    End If
-        'Next
     End Sub
 
 #Region "Méthodes"
@@ -57,54 +49,41 @@ Public Class ExprXPath
     ''' Interroge le document XML selon les informations Xpath contenu. 
     ''' </summary>
     ''' <returns></returns>
-    Public Function Interroger() As List(Of ElementXml)
+    Public Function Interroger(element As ElementXml) As List(Of ElementXml)
 
-        'File permettant de récupérer et d'appliquer les résultat des commandes en ordre. 
-        'Dim fileDeResultat As Queue(Of ElementXml) = New Queue(Of ElementXml)
+        'On récupère la première commande
+        Dim commandeEnCours As CommandeX = Me.FileDeCommande.Dequeue()
 
-        'La commande en cours. 
-        'Dim commandeEnCours As CommandeX
+        'FileResultat permettant de conserver les résultats de chaque recherche à toutes 
+        'les itérations. 
+        'On effectue la première commande sur l'élément.
+        Dim fileTempo As Queue(Of ElementXml) = commandeEnCours.Rechercher(element)
+        Me.FileDeCommande.Enqueue(commandeEnCours)
 
-        'Liste permettant de conserver les éléments de la commande en cours.
-        'commandeEnCours = Me.FileDeCommande.Dequeue()
+        'On effectue le reste des commandes : 
+        For i = 1 To Me.FileDeCommande.Count - 1
+            commandeEnCours = Me.FileDeCommande.Dequeue()
+            Dim nbResulat = fileTempo.Count
+            For iFile = 1 To nbResulat
+                Dim fileAjouter As Queue(Of ElementXml) = commandeEnCours.Rechercher(fileTempo.Dequeue())
+                While fileAjouter.Count <> 0
+                    fileTempo.Enqueue(fileAjouter.Dequeue)
+                End While
+            Next
+            Me.FileDeCommande.Enqueue(commandeEnCours)
+        Next
 
-        'On effectue la première commande avec le premier élément. 
-        'Dim fileTempo As Queue(Of ElementXml) = Me.ListeToFile(Of ElementXml)(commandeEnCours.Rechercher(), fileTempo)
-        'Me.FileDeCommande.Enqueue(commandeEnCours)
+        Dim listeRetour As List(Of ElementXml)
 
-        'On le fait pour le reste des autres commandes 
-        'For i = 1 To Me.FileDeCommande.Count - 1
-        '    commandeEnCours = Me.FileDeCommande.Dequeue()
-        '    Dim nbElemTempo As Integer = fileTempo.Count
-        '    For index = 1 To nbElemTempo
-        '        On récupère la liste 
-        '        Dim listeElemTrouve As List(Of ElementXml) = commandeEnCours.Rechercher(fileTempo.Dequeue())
-        '        On rajoute chacun des éléments à la file
-        '        Me.ListeToFile(Of ElementXml)(listeElemTrouve, fileTempo)
-        '    Next
-        '    Me.FileDeCommande.Enqueue(commandeEnCours)
-        'Next
+        'On convertit la file en liste 
+        While fileTempo.Count <> 0
+            listeRetour.Add(fileTempo.Dequeue())
+        End While
+
+        'On retourne la liste
+        Return listeRetour
     End Function
 
-
-    ''' <summary>
-    ''' Fonction simple qui transfert les éléments d'une liste à une file existante.  
-    ''' </summary>
-    ''' <typeparam name="T"></typeparam>
-    ''' <param name="liste">Une liste d'éléments T.</param>
-    ''' <param name="file">Une file d'éléments T.</param>
-    Private Sub ListeToFile(Of T)(liste As List(Of T), file As Queue(Of T))
-        If (liste Is Nothing) Then
-            Throw New ArgumentNullException("Une liste ne peut référé à rien.")
-        End If
-
-        If (file Is Nothing) Then
-            Throw New ArgumentNullException("Une file ne peut référé à rien.")
-        End If
-        For Each elem As T In liste
-            file.Enqueue(elem)
-        Next
-    End Sub
 
 #End Region
 

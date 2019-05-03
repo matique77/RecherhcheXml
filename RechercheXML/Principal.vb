@@ -39,7 +39,13 @@ Module Principal
                     Console.WriteLine(monDoc.ObtenirStats())
                     Console.ReadLine()
                 Case "4"
-
+                    Console.Write("Entrez expression XPath : ")
+                    Dim expr As ExprXPath = New ExprXPath(Console.ReadLine())
+                    Dim listeRecherche As List(Of ElementXml) = expr.Interroger(monDoc.Racine)
+                    For Each elem As ElementXml In listeRecherche
+                        Console.Write(elem.ToString())
+                    Next
+                    Console.ReadLine()
                 Case "5"
 
             End Select
