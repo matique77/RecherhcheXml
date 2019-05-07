@@ -24,7 +24,7 @@ Public Class ElementXml
     ''' <summary>
     ''' Attributs de l'élément XML. 
     ''' </summary>
-    Private _attributs As List(Of Attribut(Of String))
+    Private _attributs As List(Of Attribut)
 
     ''' <summary>
     ''' Liste des sous-éléments. 
@@ -72,11 +72,11 @@ Public Class ElementXml
     ''' Permet d'accéder aux attributs. 
     ''' </summary>
     ''' <returns>La liste des attributs.</returns>
-    Public Property Attributs As List(Of Attribut(Of String))
+    Public Property Attributs As List(Of Attribut)
         Get
             Return Me._attributs
         End Get
-        Set(value As List(Of Attribut(Of String)))
+        Set(value As List(Of Attribut))
 
             'La liste ne peut-être à nothing.  
             If (value Is Nothing) Then
@@ -145,7 +145,7 @@ Public Class ElementXml
     ''' </summary>
     ''' <param name="nom">Le nom de l'élément.</param>
     ''' <param name="listeAttribut">La liste des attributs.</param>
-    Private Sub New(nom As String, listeAttribut As List(Of Attribut(Of String)))
+    Private Sub New(nom As String, listeAttribut As List(Of Attribut))
         Me.Nom = nom
         Me.Attributs = listeAttribut
         Me.ContenuTextuel = Nothing
@@ -159,7 +159,7 @@ Public Class ElementXml
     ''' <param name="nom">Le nom de l'élément.</param>
     ''' <param name="listeAttributs">Liste des attributs.</param>
     ''' <param name="contenuTextuel">Le contenu textuel.</param>
-    Public Sub New(nom As String, listeAttributs As List(Of Attribut(Of String)), contenuTextuel As String)
+    Public Sub New(nom As String, listeAttributs As List(Of Attribut), contenuTextuel As String)
         Me.New(nom, listeAttributs)
         Me.ContenuTextuel = contenuTextuel
         Me.ElemEnfants = New List(Of ElementXml)
@@ -172,7 +172,7 @@ Public Class ElementXml
     ''' <param name="nom">Le nom de l'élément.</param>
     ''' <param name="listeAttributs">Liste des attributs.</param>
     ''' <param name="listeElemEnfants">Liste des éléments enfants.</param>
-    Public Sub New(nom As String, listeAttributs As List(Of Attribut(Of String)), listeElemEnfants As List(Of ElementXml))
+    Public Sub New(nom As String, listeAttributs As List(Of Attribut), listeElemEnfants As List(Of ElementXml))
         Me.New(nom, listeAttributs)
         Me.ElemEnfants = listeElemEnfants
         Me.ContenuTextuel = Nothing
@@ -192,7 +192,7 @@ Public Class ElementXml
     Public Function EnBalise(Optional estFermante As Boolean = False) As String
         If (Not estFermante) Then
             Dim strAtt As String = ""
-            For Each att As Attribut(Of String) In Me.Attributs
+            For Each att As Attribut In Me.Attributs
                 strAtt &= att.ToString() & " "
             Next
             Return String.Format("<{0} {1}>", Me.Nom, strAtt)
@@ -210,11 +210,14 @@ Public Class ElementXml
 
         'Création du string  des attributs. 
         Dim strAttributs As String = ""
-        For Each str As Attribut(Of String) In Me.Attributs
-            strAttributs &= $", {str.Nom} = {str.Valeur}"
+        For Each atr As Attribut In Me.Attributs
+            strAttributs &= atr.ToString() & ", "
         Next
-        Return String.Format(" Nom de l'élément : {0}, Attributs : {1}, Nombre de sous-éléments : {2} ", Me.Nom,
-                             strAttributs, Me.NbElementsEnfants)
+
+        Return String.Format(" Nom de l'élément : {0}, Attributs : {1} {3}", Me.Nom,
+                             If(strAttributs = "", "Aucun,", strAttributs), Me.NbElementsEnfants,
+                             If(Me.ContenuTextuel Is Nothing, "Nb sous-éléments : " &
+                             Me.NbElementsEnfants, "Contenu textuel : " & Me.ContenuTextuel))
     End Function
 
 #End Region

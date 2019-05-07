@@ -12,6 +12,10 @@ Imports System.Xml
 ''' </summary>
 Public Class DocumentXml
 
+#Region "Constantes"
+    Private Const espace As String = "  "
+#End Region
+
 #Region "Attributs"
 
     ''' <summary>
@@ -54,8 +58,8 @@ Public Class DocumentXml
     Public ReadOnly Property NbAttributs As Integer
         Get
             '***************** FAIRE DEKOI DE MIEU EVENTUELLEMENT ,MAIS JPENSE QUE LA METHODE PX ETRE UTILSE DONC JAL MODIFIE PAS TT SUITE
-            Dim liste As List(Of Attribut(Of String)) = New List(Of Attribut(Of String))
-            Dim resultat As List(Of Attribut(Of String)) = ListerAttributsEnProfondeurRec(Racine, liste)
+            Dim liste As List(Of Attribut) = New List(Of Attribut)
+            Dim resultat As List(Of Attribut) = ListerAttributsEnProfondeurRec(Racine, liste)
             Return resultat.Count
         End Get
     End Property
@@ -84,7 +88,8 @@ Public Class DocumentXml
     ''' </summary>
     ''' <param name="racine"></param>
     Public Sub New(racine As ElementXml)
-        Me.Racine = racine
+        Me.Racine = New ElementXml("Document", New List(Of Attribut), "")
+        Me.Racine.ElemEnfants.Add(racine)
     End Sub
 #End Region
 
@@ -111,9 +116,9 @@ Public Class DocumentXml
         End If
     End Function
 
-    Private Function ListerAttributsEnProfondeurRec(noeudCourant As ElementXml, ByRef liste As List(Of Attribut(Of String))) As List(Of Attribut(Of String))
+    Private Function ListerAttributsEnProfondeurRec(noeudCourant As ElementXml, ByRef liste As List(Of Attribut)) As List(Of Attribut)
         If noeudCourant Is Nothing Then
-            Return New List(Of Attribut(Of String))
+            Return New List(Of Attribut)
         Else
             liste.AddRange(noeudCourant.Attributs)
 
@@ -130,10 +135,10 @@ Public Class DocumentXml
         'Si enfant contient du texte : 
         If (noeudCourant.ContenuTextuel IsNot Nothing) Then
             'On ajoute comme contenu textuel 
-            Return StrDup(nbTab, vbTab) & noeudCourant.EnBalise() & " " & noeudCourant.ContenuTextuel & " " _
+            Return StrDup(nbTab, "   ") & noeudCourant.EnBalise() & " " & noeudCourant.ContenuTextuel & " " _
                         & noeudCourant.EnBalise(True) & vbCrLf
         Else
-            Dim strBalise As String = StrDup(nbTab, vbTab) & noeudCourant.EnBalise() & vbCrLf
+            Dim strBalise As String = StrDup(nbTab, "   ") & noeudCourant.EnBalise() & vbCrLf
             nbTab += 1
             'On parcourt les enfants si il y en a. 
             For Each sousElem As ElementXml In noeudCourant.ElemEnfants
@@ -141,7 +146,7 @@ Public Class DocumentXml
             Next
             nbTab -= 1
             'On ajoute la balise de fermeture 
-            strBalise &= StrDup(nbTab, vbTab) & noeudCourant.EnBalise(True) & vbCrLf
+            strBalise &= StrDup(nbTab, "   ") & noeudCourant.EnBalise(True) & vbCrLf
             Return strBalise
         End If
     End Function
@@ -184,10 +189,11 @@ Public Class DocumentXml
     ''' </summary>
     ''' <returns>Une chaine de caractère rerpésentant chacun des noeuds du document.</returns>
     Public Overrides Function ToString() As String
-        Return Me.ListerEnStrRec(Me.Racine, 0)
+        Return Me.ListerEnStrRec(Me.Racine.ElemEnfants(0), 0)
     End Function
 
 #End Region
+
 #End Region
 
 

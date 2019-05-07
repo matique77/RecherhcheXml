@@ -2,12 +2,10 @@
 ''' <summary>
 ''' Interface implémentant une commande XPath. 
 ''' </summary>
-Public Interface CommandeX
+Public Interface ICommandeX
 
 #Region "Propriétés"
     ReadOnly Property Nom As String
-
-    ReadOnly Property Filtre As String
 
 #End Region
 

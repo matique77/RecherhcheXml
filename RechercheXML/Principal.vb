@@ -5,7 +5,6 @@
 '            Date : 01/04/19
 '=================================================================================================
 
-Imports System.Xml
 Imports System.IO
 
 Module Principal
@@ -26,7 +25,7 @@ Module Principal
                 Case "1"
                     Console.Clear()
                     Console.WriteLine("Veuillez entrer le nom du fichier")
-                    Dim nomFichier As String = Console.ReadLine
+                    Dim nomFichier As String = "C:\Users\Client\Desktop\Informatique (Session 3)\POO III\TP\TP-3\Help\exemples-pour-tests/exemples-recettes.xml"
                     If File.Exists(nomFichier) Then
                         monDoc = ChargerFichierXml(nomFichier)
                     End If
@@ -43,7 +42,7 @@ Module Principal
                     Dim expr As ExprXPath = New ExprXPath(Console.ReadLine())
                     Dim listeRecherche As List(Of ElementXml) = expr.Interroger(monDoc.Racine)
                     For Each elem As ElementXml In listeRecherche
-                        Console.Write(elem.ToString())
+                        Console.WriteLine(elem.ToString())
                     Next
                     Console.ReadLine()
                 Case "5"

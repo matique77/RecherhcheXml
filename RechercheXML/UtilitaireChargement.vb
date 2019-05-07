@@ -44,10 +44,10 @@ Module UtilitaireChargement
     ''' </summary>
     ''' <param name="maCollection">La collection d'attribut du fichier</param>
     ''' <returns>La liste des attributes transformer en attribut.</returns>
-    Private Function AttributesVersList(maCollection As XmlAttributeCollection) As List(Of Attribut(Of String))
-        Dim listeRetour = New List(Of Attribut(Of String))
+    Private Function AttributesVersList(maCollection As XmlAttributeCollection) As List(Of Attribut)
+        Dim listeRetour = New List(Of Attribut)
         For Each attribute As XmlAttribute In maCollection
-            listeRetour.Add(New Attribut(Of String)(attribute.Name, attribute.Value))
+            listeRetour.Add(New Attribut(attribute.Name, attribute.Value))
         Next
         Return listeRetour
     End Function
@@ -69,7 +69,7 @@ Module UtilitaireChargement
 
         For Each element As XmlElement In maCollection
             Dim nouvelElement As ElementXml
-            If (element.ChildNodes.Count = XmlNodeType.Text) Then
+            If (element.FirstChild.NodeType = XmlNodeType.Text) Then
                 nouvelElement = New ElementXml(element.Name, AttributesVersList(element.Attributes), element.InnerText)
             Else
                 nouvelElement = New ElementXml(element.Name, AttributesVersList(element.Attributes), XmlChildVersClassRecursif(element.ChildNodes))

@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' Classe générique représentant un attribut d'un ElementXml. 
 ''' </summary>
-Public Structure Attribut(Of T)
+Public Structure Attribut
 
 #Region "Attributs"
 
@@ -13,7 +13,7 @@ Public Structure Attribut(Of T)
     ''' <summary>
     ''' La valeur liée à l'attribut. 
     ''' </summary>
-    Private _valeur As T
+    Private _valeur As String
 
 #End Region
 
@@ -47,11 +47,11 @@ Public Structure Attribut(Of T)
     ''' Accède à la valeur de l'attribut.
     ''' </summary>
     ''' <returns>La valeur de l'attribut.</returns>
-    Public Property Valeur As T
+    Public Property Valeur As String
         Get
             Return Me._valeur
         End Get
-        Set(value As T)
+        Set(value As String)
             Me._valeur = value
         End Set
     End Property
@@ -60,7 +60,7 @@ Public Structure Attribut(Of T)
 
 #Region "Constructeur"
 
-    Public Sub New(nom As String, valeur As T)
+    Public Sub New(nom As String, valeur As String)
         Me.Nom = nom
         Me.Valeur = valeur
     End Sub
@@ -72,12 +72,9 @@ Public Structure Attribut(Of T)
     ''' Récupère une chaîne de caractère représentant un attribut. 
     ''' </summary>
     ''' <returns>Une chaine de caractère représentant l'attribut.</returns>
-    Public Overrides Function ToString() As String
-        Dim valeur As String = If(TypeOf Me.Valeur Is String,
-            String.Format("""{0}""", Me.Valeur),
-            Me.Valeur.ToString())
 
-        Return String.Format("{0}={1}", Me.Nom, valeur)
+    Public Overrides Function ToString() As String
+        Return String.Format("{0}=""{1}""", Me.Nom, Me.Valeur)
     End Function
 
 #End Region

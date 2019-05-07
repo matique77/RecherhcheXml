@@ -5,27 +5,39 @@ Imports RechercheXML
 ''' Classe virtuelle représentant une commande XPath. 
 ''' </summary>
 Public Class CommandeXEtoile
-    Inherits CommandeX
+    Implements ICommandeX
+
+#Region "Constante"
+    Private Const regxEtoile As String = "^\/\*$"
+#End Region
+
+
+#Region "Attributs"
+    Private ReadOnly _nom As String
+#End Region
 
 #Region "Propriétés"
-    Public Overrides Property Nom As String
+    Public ReadOnly Property Nom As String Implements ICommandeX.Nom
         Get
-            Return MyBase.Nom
+            Return Me._nom
         End Get
-        Private Set(value As String)
-
-        End Set
     End Property
-
-
 #End Region
+
 
 #Region "Constructeur"
     ''' <summary>
     ''' Permet de creer une CommandeXSimple avec * comme nom d'élément.
     ''' </summary>
-    Public Sub New()
-        MyBase.New("*")
+    Public Sub New(expression As String)
+        StringValide(expression)
+        'On vérifie que l'expression soit valider : 
+        If (Not RegexMatch(regxEtoile, expression)) Then
+            Throw New ArgumentException("L'expression n'est pas conforme.")
+        End If
+
+        'On n'a ni nom, ni filtre
+        Me._nom = ""
     End Sub
 #End Region
 
@@ -38,13 +50,14 @@ Public Class CommandeXEtoile
     ''' </summary>
     ''' <param name="nomElem">L'élément à partir duquel chercher.</param>
     ''' <returns></returns>
-    Public Function Rechercher(elem As ElementXml) As List(Of ElementXml)
-        Return elem.ElemEnfants
+    Public Function Rechercher(elem As ElementXml) As Queue(Of ElementXml) Implements ICommandeX.Rechercher
+        Dim fileRetour As Queue(Of ElementXml) = New Queue(Of ElementXml)
+        For Each elem In elem.ElemEnfants
+            fileRetour.Enqueue(elem)
+        Next
+        Return fileRetour
     End Function
 
-    Public Function Rechercher(nomElem As ElementXml, As Object) As List(Of ElementXml)
-        Throw New NotImplementedException()
-    End Function
 
 #End Region
 
