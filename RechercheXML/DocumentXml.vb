@@ -66,7 +66,7 @@ Public Class DocumentXml
 
     Public ReadOnly Property Profondeur As Integer
         Get
-            Return CompterProfondeur(Racine, 0)
+            Return CompterProfondeur(Racine)
         End Get
     End Property
 #End Region
@@ -151,17 +151,18 @@ Public Class DocumentXml
         End If
     End Function
 
-    Private Function CompterProfondeur(noeudCourant As ElementXml, num As Integer) As Integer
-        Dim valeurMax = num
+    Private Function CompterProfondeur(noeudCourant As ElementXml) As Integer
+        Dim valeurMax = 0
         If noeudCourant Is Nothing Then
-            Return num
+            Return valeurMax
         Else
             For Each fils As ElementXml In noeudCourant.ElemEnfants
-                Dim profondeurFils As Integer = CompterProfondeur(fils, num + 1)
-                If profondeurFils > valeurMax Then
+                Dim profondeurFils As Integer = 1 + CompterProfondeur(fils)
+                If (profondeurFils > valeurMax) Then
                     valeurMax = profondeurFils
                 End If
             Next
+            Return valeurMax
         End If
         Return valeurMax
     End Function

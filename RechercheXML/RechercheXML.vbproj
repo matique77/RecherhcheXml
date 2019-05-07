@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="UtilitaireChargement.vb" />
     <Compile Include="UtilitaireRegx.vb" />
+    <Compile Include="UtilitaireTest.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
