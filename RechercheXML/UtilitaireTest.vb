@@ -1,3 +1,0 @@
-﻿Module UtilitaireTest
-
-End Module

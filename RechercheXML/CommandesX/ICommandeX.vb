@@ -5,6 +5,7 @@
 Public Interface ICommandeX
 
 #Region "Propriétés"
+    'Le nom de la commande.
     ReadOnly Property Nom As String
 
 #End Region
