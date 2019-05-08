@@ -62,7 +62,6 @@ Module Principal
                             Console.WriteLine("7 : /livre-recettes/recettes/recette[@cat='entrée']")
                             Console.WriteLine("8 : /livre-recettes/recettes/recette/ingredients/ingredient[@unite='gramme']")
                             Dim entrerXml As String = Console.ReadLine()
-                            Console.Clear()
                             Select Case entrerXml
                                 Case "1"
                                     uneCommandeXml = "/livre-recettes/recettes/recette"

@@ -60,7 +60,8 @@ Public Class CommandeXSimple
             'On récupère le filtre : 
             expression = expression.Substring(2)
             expression = expression.Remove(expression.Length - 1)
-            expression = expression.Replace("'", ControlChars.Quote)
+            expression = expression.Replace("'", "")
+
             Me._filtre = expression
         Else
             Me._nom = expression
@@ -85,7 +86,7 @@ Public Class CommandeXSimple
             If (sousElem.Nom = Me.Nom) Then
                 If (Me.EstFiltree) Then
                     For Each attr As Attribut In sousElem.Attributs
-                        If (attr.ToString() = Me.Filtre) Then
+                        If (attr.ToString().Replace("""", "") = Me.Filtre) Then
                             fileRetour.Enqueue(sousElem)
                         End If
                     Next

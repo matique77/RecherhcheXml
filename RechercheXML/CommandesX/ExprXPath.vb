@@ -42,51 +42,7 @@ Public Class ExprXPath
 
         'On doit décomposer le string en commandes.	        'On doit décomposer le string en commandes.
         'Pour ce faire, on récupère un tableau de string où les éléments sont séparés par les symbole.	        'Pour ce faire, on récupère un tableau de string où les éléments sont séparés par les symbole.
-        'On parcourt le string : 	        'On parcourt le string : 
-
-        'Dim fileString = New Queue(Of String)
-        'Dim tabChar() As Char = recherhe.ToArray()
-        'Dim unstring As String = ""
-        'Dim i As Integer = 0
-        'While i < tabChar.Length
-        '    Select Case tabChar(i)
-        '        'Si c'est un symbole special on regarde si qu'il y a apres sinon ont ajoute le char au string a empiller.
-        '        Case symbSlsh
-        '            If String.Empty(tabChar(i)) Then
-        '                fileString.Enqueue(unstring)
-        '                unstring = ""
-        '                unstring = unstring.Insert(unstring.Length, tabChar(i))
-        '            End If
-        '            If i <> tabChar.Length - 1 Then
-        '                'Si ce n'est pas la fin
-        '                Select Case tabChar(i + 1)
-        '                    'Ont regarde si le symbole suivant est une barre oblique sinon ont ajoute le string a empiller a la pile.
-        '                    Case symbSlsh
-        '                        unstring = unstring.Insert(unstring.Length, tabChar(i))
-        '                        i += 1
-        '                End Select
-        '                If i = 0 Then
-        '                    unstring = unstring.Insert(unstring.Length, tabChar(i))
-        '                End If
-        '            End If
-        '        Case Else
-        '            unstring = unstring.Insert(unstring.Length, tabChar(i))
-        '    End Select
-        '    i += 1
-        'End While
-        'fileString.Enqueue(unstring)
-
-        'Me.FileDeCommande = New Queue(Of ICommandeX)
-        'While fileString.Count <> 0
-        '    Dim elem As String = fileString.Dequeue
-
-        'End While
-
-        'Autre exemple d'algorithme : 
-        '/?(1!=/ && ,ADD,ON remove)
-        'On parcourt le string et on récupère un tableau d'indice contenant chacun des /
-
-        'On parcourt et on ajoute un espace avant chaque / : 
+        'On parcourt le string : 	        
         Me.FileDeCommande = New Queue(Of ICommandeX)
         Dim i As Integer = 0
         While (i < recherhe.Count)
