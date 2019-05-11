@@ -120,7 +120,7 @@ Public Class DocumentXml
     End Function
 
     ''' <summary>
-    ''' Permet de lister les attributs et attributs enfant en profondeur récurssive.
+    ''' Permet de lister les attributs et attributs enfants en profondeur.
     ''' </summary>
     ''' <param name="elemCourant">L'ElementXml courant.</param>
     ''' <returns>Une liste de tous les attributs</returns>
@@ -197,7 +197,7 @@ Public Class DocumentXml
 
 #Region "Méthodes publiques"
     ''' <summary>
-    ''' Génère une chaine de caractère contenant les du DocumentXml. 
+    ''' Génère une chaine de caractère contenant les statistiques du DocumentXml. 
     ''' </summary>
     ''' <returns>Une chaine de caractère représentant les statistiques du document.</returns>
     Public Function ObtenirStats() As String

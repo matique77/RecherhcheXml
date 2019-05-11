@@ -108,7 +108,8 @@ Module Principal
         Console.WriteLine()
         Console.Write("Choix du document : ")
         While (Not Integer.TryParse(Console.ReadLine(), choix) AndAlso choix < 1 OrElse choix > 2)
-            Console.Write("Entrez un choix valide!")
+            Console.WriteLine("Entrez un choix valide!")
+            Console.Write("Choix du document : ")
         End While
         Console.WriteLine()
         Dim tabChoix() As String
