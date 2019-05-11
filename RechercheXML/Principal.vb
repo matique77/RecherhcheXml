@@ -1,118 +1,151 @@
 ﻿'=================================================================================================
 '  Nom du fichier : Principal.vb
 '         Module  : Principale
-' Nom de l'auteur : Mathieu Pelletier
+' Nom de l'auteur : Mathieu Pelletier et Mathieu Morin
 '            Date : 01/04/19
 '=================================================================================================
 
 Imports System.IO
 
+''' <summary>
+''' Module Contenant le programme principal du projet. 
+''' </summary>
 Module Principal
+    ''' <summary>
+    ''' Méthode principal permettant de charger un document Xml, de l'afficher, d'afficher les statistiques
+    ''' du fichier, de l'interroger avec une commande XPath et d'éxécuter une série de test. 
+    ''' </summary>
     Sub Main()
-        Dim monDoc As DocumentXml = Nothing
-        Dim nomFichier As String = Nothing
-        Dim entrer As String = Nothing
+        'Document chargé en mémoire. 
+        Dim monDoc As DocumentXml
+        'Le nom du fichier chargé. 
+        Dim nomFichier As String = ""
+        'Le choix du menu initialisé à "". 
+        Dim entrer As String = ""
         Do
             Console.Clear()
-            Console.WriteLine("Veuillez choisir une des options suivante : ")
-            Console.WriteLine(" 1 - Charger un document XML")
-            Console.WriteLine(" 2 - Afficher un document XML")
-            Console.WriteLine(" 3 - Afficher statistique")
-            Console.WriteLine(" 4 - Interroger")
-            Console.WriteLine(" 5 - Exécuter")
-            Console.WriteLine(" 6 - Quitter")
+            Console.Write("Veuillez choisir une des options suivante : " & vbCrLf & vbCrLf &
+                          " 1 - Charger un document XML" & vbCrLf &
+                          " 2 - Afficher un document XML" & vbCrLf &
+                          " 3 - Afficher statistique" & vbCrLf &
+                          " 4 - Interroger" & vbCrLf &
+                          " 5 - Exécuter" & vbCrLf &
+                          " 6 - Quitter" & vbCrLf)
+            Console.WriteLine()
+            Console.Write("Choix : ")
             entrer = Console.ReadLine()
+            Console.Clear()
             Select Case entrer
                 Case "1"
-                    Console.Clear()
-                    Console.WriteLine("Veuillez entrer le nom du fichier")
+                    Console.WriteLine("Veuillez entrer le chemin/le nom du fichier à charger : ")
                     nomFichier = Console.ReadLine()
                     If File.Exists(nomFichier) Then
                         monDoc = ChargerFichierXml(nomFichier)
+                        Console.WriteLine(vbCrLf & "Fichier chargé!")
+                    Else
+                        Console.WriteLine("Le chemin ou le nom du fichier est invalide.")
                     End If
                 Case "2"
-                    Console.Clear()
-                    Console.WriteLine(monDoc.ToString())
-                    Console.ReadLine()
+                    If (monDoc IsNot Nothing) Then
+                        Console.WriteLine(monDoc.ToString())
+                    Else
+                        Console.WriteLine("Aucun fichier n'est chargé présentement")
+                    End If
                 Case "3"
-                    Console.Clear()
-                    Console.WriteLine(monDoc.ObtenirStats())
-                    Console.ReadLine()
+                    If (monDoc IsNot Nothing) Then
+                        Console.WriteLine(monDoc.ObtenirStats())
+                    Else
+                        Console.WriteLine("Aucun fichier n'est chargé présentement")
+                    End If
                 Case "4"
-                    Console.Write("Entrez expression XPath : ")
-                    Dim expr As ExprXPath = New ExprXPath(Console.ReadLine())
-                    Dim listeRecherche As List(Of ElementXml) = expr.Interroger(monDoc.Racine)
-                    For Each elem As ElementXml In listeRecherche
-                        Console.WriteLine(elem.ToString())
-                    Next
-                    Console.ReadLine()
-                Case "5"
-                    Dim uneCommandeXml As String = Nothing
-                    Dim fichierValide As Boolean = True
-                    Console.Clear()
-                    Console.WriteLine("                                       Veuillez entrer l'indice désiré.")
-                    Select Case nomFichier
-                        Case "exemples-recettes.xml"
-                            Console.WriteLine("1 : /livre-recettes/recettes/recette")
-                            Console.WriteLine("2 : /livre-recettes/recettes/recette/nom")
-                            Console.WriteLine("3 : /livre-recettes/*")
-                            Console.WriteLine("4 : /livre-recettes/recettes/recette/ingredients/*")
-                            Console.WriteLine("5 : //ingredient")
-                            Console.WriteLine("6 : /livre-recettes/recettes//ingredient")
-                            Console.WriteLine("7 : /livre-recettes/recettes/recette[@cat='entrée']")
-                            Console.WriteLine("8 : /livre-recettes/recettes/recette/ingredients/ingredient[@unite='gramme']")
-                            Dim entrerXml As String = Console.ReadLine()
-                            Select Case entrerXml
-                                Case "1"
-                                    uneCommandeXml = "/livre-recettes/recettes/recette"
-                                Case "2"
-                                    uneCommandeXml = "/livre-recettes/recettes/recette/nom"
-                                Case "3"
-                                    uneCommandeXml = "/livre-recettes/*"
-                                Case "4"
-                                    uneCommandeXml = "/livre-recettes/recettes/recette/ingredients/*"
-                                Case "5"
-                                    uneCommandeXml = "//ingredient"
-                                Case "6"
-                                    uneCommandeXml = "/livre-recettes/recettes//ingredient"
-                                Case "7"
-                                    uneCommandeXml = "/livre-recettes/recettes/recette[@cat='entrée']"
-                                Case "8"
-                                    uneCommandeXml = "/livre-recettes/recettes/recette/ingredients/ingredient[@unite='gramme']"
-                            End Select
-                        Case "exemples-californication-rhcp.xml"
-                            Console.Clear()
-                            Console.WriteLine("1 : /cd/liste-pieces/piece[@no-sequence=6]")
-                            Console.WriteLine("2 : /cd/*")
-                            Console.WriteLine("3 : /cd//titre")
-                            Console.WriteLine("4 : /cd/liste-pieces//minutes")
-                            Dim entrerXml As String = Console.ReadLine()
-                            Console.Clear()
-                            Select Case entrerXml
-                                Case "1"
-                                    uneCommandeXml = "/cd/liste-pieces/piece[@no-sequence=6]"
-                                Case "2"
-                                    uneCommandeXml = "/cd/*"
-                                Case "3"
-                                    uneCommandeXml = "/cd//titre"
-                                Case "4"
-                                    uneCommandeXml = "/cd/liste-pieces//minutes"
-                            End Select
-                        Case Else
-                            Console.Clear()
-                            fichierValide = False
-                            Console.WriteLine("Veuillez charger un fichier valide.")
-                    End Select
-                    If fichierValide Then
-                        Dim expr As ExprXPath = New ExprXPath(uneCommandeXml)
+                    If (monDoc IsNot Nothing) Then
+                        Console.Write("Entrez expression XPath : ")
+                        Dim expr As ExprXPath = New ExprXPath(Console.ReadLine())
                         Dim listeRecherche As List(Of ElementXml) = expr.Interroger(monDoc.Racine)
                         For Each elem As ElementXml In listeRecherche
                             Console.WriteLine(elem.ToString())
                         Next
+                    Else
+                        Console.WriteLine("Aucun fichier n'est chargé présentement")
                     End If
-                    Console.ReadLine()
+                Case "5"
+                    Executer()
+                Case "6"
+                    'Ne rien faire
+                Case Else
+                    Console.WriteLine("Choix invalide.")
             End Select
+            Console.Write("Appuyer sur entrée pour continuer...")
+            Console.ReadLine()
         Loop While entrer <> "6"
+    End Sub
+
+    ''' <summary>
+    ''' Exécute une série de tests de commandes XPath. 
+    ''' </summary>
+    Public Sub Executer()
+
+        Dim cheminCaliforniations As String = "exemples-californication-rhcp.xml"
+        Dim cheminRecette As String = "exemples-recettes.xml"
+
+        'Commandes séparées d'un espace permettant facilement d'en ajouter.
+        Dim choixRecettes As String = "/livre-recettes/recettes/recette /livre-recettes/recettes/recette/nom" &
+        " /livre-recettes/* /livre-recettes/recettes/recette/ingredients/* //ingredient /livre-recettes/recettes//ingredient " &
+        "/livre-recettes/recettes/recette[@cat='entrée'] " & "/livre-recettes/recettes/recette/ingredients/ingredient[@unite='gramme']"
+
+        Dim choixCalifornication As String = "/cd/liste-pieces/piece[@no-sequence=6] /cd/* /cd//titre" &
+            " /cd/liste-pieces//minutes"
+
+        'Le doc à tester
+        Dim docTester As DocumentXml
+
+        'Accumulateur initialisé à 0. 
+        Dim choix As Integer = 0
+
+        'Affichage des choix
+        Console.WriteLine("1-Exemples-Californications" & vbCrLf &
+                      "2-Exemples-Recettes")
+        Console.WriteLine()
+        Console.Write("Choix du document : ")
+        While (Not Integer.TryParse(Console.ReadLine(), choix) AndAlso choix < 1 OrElse choix > 2)
+            Console.Write("Entrez un choix valide!")
+        End While
+        Console.WriteLine()
+        Dim tabChoix() As String
+        Select Case choix
+            Case 1
+                docTester = ChargerFichierXml(cheminCaliforniations)
+                tabChoix = choixCalifornication.Split(" "c)
+            Case 2
+                docTester = ChargerFichierXml(cheminRecette)
+                tabChoix = choixRecettes.Split(" "c)
+        End Select
+
+        'Création et affichage des choix 
+        Do
+            Dim i As Integer = 0
+            For i = 0 To tabChoix.Length - 1
+                Console.WriteLine(i + 1 & "-" & tabChoix(i))
+            Next
+            Console.WriteLine(i + 1 & "-" & "Quitter")
+            choix = 0
+            Do
+                If choix <> 0 Then
+                    Console.WriteLine("Entrez un choix valide!")
+                End If
+                Console.WriteLine()
+                Console.Write("Choix : ")
+            Loop While (Not Integer.TryParse(Console.ReadLine(), choix) AndAlso choix < 1 OrElse choix > i + 1)
+            If (choix <> tabChoix.Length + 1) Then
+                Dim expr As ExprXPath = New ExprXPath(tabChoix(choix - 1))
+                Dim listeRecherche As List(Of ElementXml) = expr.Interroger(docTester.Racine)
+                For Each elem As ElementXml In listeRecherche
+                    Console.WriteLine(elem.ToString())
+                Next
+                Console.ReadLine()
+            End If
+            Console.Clear()
+        Loop While choix <> tabChoix.Length + 1
     End Sub
 End Module
 

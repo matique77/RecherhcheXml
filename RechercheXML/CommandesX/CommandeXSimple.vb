@@ -1,33 +1,63 @@
-﻿Imports System.Text.RegularExpressions
-
+﻿'=================================================================================================
+'  Nom du fichier : CommandeXSimple.vb
+'         Classe  : CommandeXSimple
+' Nom de l'auteur : Mathieu Morin et Mathieu Pelletier
+'            Date : 02/05/19
+'=================================================================================================
 
 ''' <summary>
-''' Classe virtuelle représentant une commande XPath. 
+''' Classe représentant une commande XPath / et implémentant l'interface
+''' ICommandeX. 
 ''' </summary>
 Public Class CommandeXSimple
     Implements ICommandeX, IFiltreX
 
 #Region "Constante"
-    Private Const regxSimple As String = "^/.[^/]+$"
+    ''' <summary>
+    ''' Expression régulière validant la forme de la syntaxe /. 
+    ''' </summary>
+    Public Const RegxSimple As String = "^/.[^/]+$"
 #End Region
 
 #Region "Attributs"
+    ''' <summary>
+    ''' Nom de la commande
+    ''' </summary>
     Private ReadOnly _nom As String
+
+    ''' <summary>
+    ''' Le filtre appliqué à la commande
+    ''' </summary>
     Private ReadOnly _filtre As String
 #End Region
 
 #Region "Propriétés"
+    ''' <summary>
+    ''' Accède au nom de la commande 
+    ''' </summary>
+    ''' <returns>Le nom de la commande.</returns>
     Public ReadOnly Property Nom As String Implements ICommandeX.Nom
         Get
             Return Me._nom
         End Get
     End Property
+
+    ''' <summary>
+    ''' Accède au filtre de la commande 
+    ''' </summary>
+    ''' <returns>Le filte de la commande, si elle est filtrée,
+    ''' sinon retourne une chaine vide.
+    ''' </returns>
     Public ReadOnly Property Filtre As String Implements IFiltreX.Filtre
         Get
             Return Me._filtre
         End Get
     End Property
 
+    ''' <summary>
+    ''' Determine si l'élément est filtré. 
+    ''' </summary>
+    ''' <returns>Vrai si l'élément est filtré, sinon Faux.</returns>
     Public ReadOnly Property EstFiltree As Boolean Implements IFiltreX.EstFiltree
         Get
             Return Me.Filtre <> ""
@@ -38,12 +68,24 @@ Public Class CommandeXSimple
 
 #Region "Constructeur"
     ''' <summary>
-    ''' Permet de créer une CommandeXSimple à partir d'une expression donnée.
+    ''' Permet de créer une CommandeXSimple à partir d'e l'expression.
     ''' </summary>
+    ''' <param name="expression">Une expression Xpath débutant par /.</param>
+    ''' <remarks>L'expression ne peut être vide ou référer à rien.</remarks>
     Public Sub New(expression As String)
-        StringValide(expression)
-        'On vérifie que l'expression soit valider : 
-        If (Not RegexMatch(regxSimple, expression)) Then
+        'On récupère un string Valide. 
+        If (expression Is Nothing) Then
+            Throw New ArgumentNullException("Une expression de caractère ne référer à rien.")
+        End If
+
+        expression = expression.Trim()
+
+        If (expression = "") Then
+            Throw New ArgumentException("Une expression ne peut être vide.")
+        End If
+
+        'On vérifie que l'expression soit valide : 
+        If (Not RegexMatch(CommandeXSimple.RegxSimple, expression)) Then
             Throw New ArgumentException("L'expression n'est pas conforme.")
         End If
 
@@ -77,9 +119,11 @@ Public Class CommandeXSimple
     ''' <summary>
     ''' Effectue une recherhe à partir de l'élément reçu en paramètre et du nom de l'élément.
     ''' </summary>
-    ''' <param name="nomElem">L'élément à partir duquel chercher.</param>
-    ''' <returns></returns>
+    ''' <param name="elem">L'élément à partir duquel chercher.</param>
+    ''' <returns>Une file d'ElementXml. </returns>
+    ''' <remarks>Un élément ne peut référer à rien.</remarks>
     Public Function Rechercher(elem As ElementXml) As Queue(Of ElementXml) Implements ICommandeX.Rechercher
+
         Dim fileRetour As Queue(Of ElementXml) = New Queue(Of ElementXml)
         'On parcourt tous les éléments enfants et retourne une liste. 
         For Each sousElem In elem.ElemEnfants
@@ -98,9 +142,6 @@ Public Class CommandeXSimple
         Next
         Return fileRetour
     End Function
-
-
-
 #End Region
 
 End Class

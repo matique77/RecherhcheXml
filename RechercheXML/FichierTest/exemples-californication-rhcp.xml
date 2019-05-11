@@ -1,0 +1,136 @@
+<?xml-stylesheet type="text/xsl" href="exemples-californication-rhcp.xsl" ?>
+
+<cd no-serie="B2-589C-730">
+	<titre>Californication</titre>
+	<artiste>Red Hot Chili Peppers</artiste>
+	<date-parution>1999</date-parution>
+	<duree-total>
+		<minutes>56</minutes>
+		<secondes>17</secondes>
+	</duree-total>
+
+	<liste-pieces>
+
+		<piece no-sequence="1">
+			<titre>Around The World</titre>
+			<duree>
+			
+				<minutes>3</minutes>
+				<secondes>58</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="2">
+			<titre>Parallel Universe</titre>
+			<duree>
+				<minutes>4</minutes>
+				<secondes>30</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="3">
+			<titre>Scar Tissue</titre>
+			<duree>
+				<minutes>3</minutes>
+				<secondes>37</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="4">
+			<titre>Otherside</titre>
+			<duree>
+				<minutes>4</minutes>
+				<secondes>15</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="5">
+			<titre>Get on Top</titre>
+			<duree>
+				<minutes>3</minutes>
+				<secondes>18</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="6">
+			<titre>Californication</titre>
+			<duree>
+				<minutes>5</minutes>
+				<secondes>21</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="7">
+			<titre>Easily</titre>
+			<duree>
+				<minutes>3</minutes>
+				<secondes>51</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="8">
+			<titre>Porcelain</titre>
+			<duree>
+				<minutes>2</minutes>
+				<secondes>43</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="9">
+			<titre>Emitremmus</titre>
+			<duree>
+				<minutes>4</minutes>
+				<secondes>0</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="10">
+			<titre>I Like Dirt</titre>
+			<duree>
+				<minutes>2</minutes>
+				<secondes>37</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="11">
+			<titre>This Velvet Glove</titre>
+			<duree>
+				<minutes>3</minutes>
+				<secondes>45</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="12">
+			<titre>Savior</titre>
+			<duree>
+				<minutes>4</minutes>
+				<secondes>52</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="13">
+			<titre>Purple Stain</titre>
+			<duree>
+				<minutes>4</minutes>
+				<secondes>13</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="14">
+			<titre>Right on Time</titre>
+			<duree>
+				<minutes>1</minutes>
+				<secondes>52</secondes>
+			</duree>
+		</piece>
+
+		<piece no-sequence="15">
+			<titre>Road Trippin'</titre>
+			<duree>
+				<minutes>3</minutes>
+				<secondes>25</secondes>
+			</duree>
+		</piece>
+
+	</liste-pieces>
+</cd>

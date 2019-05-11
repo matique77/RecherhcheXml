@@ -1,95 +1,109 @@
 ﻿'=================================================================================================
 '  Nom du fichier : DocumentXml.vb
 '         Classe  : ComXPath
-' Nom de l'auteur : Mathieu Morin 
+' Nom de l'auteur : Mathieu Morin et Mathieu Pelletier
 '            Date : 30/04/19
 '=================================================================================================
 
 
 ''' <summary>
 ''' Représente une commande XPath.
-''' Elle permet d'encontainer les éléments importants de la commande passé. 
+''' Elle permet d'encontainer chacune des commandes passées. 
 ''' </summary>
 Public Class ExprXPath
 
 
 #Region "Constantes"
+
+    ''' <summary>
+    ''' Représente le symbole /.
+    ''' </summary>
     Private Const symbSlsh As Char = "/"c
+
+    ''' <summary>
+    ''' Représente le symbole /*
+    ''' </summary>
     Private Const symbSlashEtoile As Char = "*"c
-    Private Const symDoubleSlash As String = "//"
 
-    Private Const filtre As String = "[@x=y]"
-
+    ''' <summary>
+    ''' Représente l'expression régulière d'un filtre.
+    ''' </summary>
     Public Const RegxFiltre As String = "\[@.+=(\d+|'.+')\]"
 #End Region
 
 #Region "Attributs"
+    ''' <summary>
+    ''' Représente la file de commande de l'expression.
+    ''' </summary>
     Private _fileDeCommande As Queue(Of ICommandeX)
 #End Region
 
 #Region "Propriétés"
+    ''' <summary>
+    ''' Accède à la file de commande de l'expression. 
+    ''' </summary>
+    ''' <returns>Une file de commande.</returns>
     Public Property FileDeCommande As Queue(Of ICommandeX)
         Get
             Return Me._fileDeCommande
         End Get
-        Set(value As Queue(Of ICommandeX))
+        Private Set(value As Queue(Of ICommandeX))
             Me._fileDeCommande = value
         End Set
     End Property
 #End Region
+    ''' <summary>
+    ''' Permet de créer une expression selon une recherche XPath. 
+    ''' </summary>
+    ''' <param name="recherche">Une expression XPath.</param>
+    ''' <remarks>Une recherche ne peut référer à rien.</remarks>
+    Public Sub New(recherche As String)
 
-    Public Sub New(recherhe As String)
+        If (recherche Is Nothing) Then
+            Throw New ArgumentNullException("Une expression de caractère ne peut référer à rien.")
+        End If
 
-        'On doit décomposer le string en commandes.	        'On doit décomposer le string en commandes.
-        'Pour ce faire, on récupère un tableau de string où les éléments sont séparés par les symbole.	        'Pour ce faire, on récupère un tableau de string où les éléments sont séparés par les symbole.
+        recherche = recherche.Trim()
+        'On décompose le string en commandes.
+
+        'Pour ce faire, la recherche est séparé par le symbole / et divisé en sous recherche :
+
         'On parcourt le string : 	        
         Me.FileDeCommande = New Queue(Of ICommandeX)
-        Dim i As Integer = 0
-        While (i < recherhe.Count)
-            If (recherhe(i) <> symbSlsh) Then
-                'On démarre une sous recherche 
-                Dim iEtat As Integer = i
-                Dim stringTempo As String = ""
-                While (recherhe(iEtat) <> symbSlsh AndAlso iEtat <> recherhe.Count - 1)
-                    iEtat += 1
-                End While
-                Dim elementCouper As String
-                If iEtat <> recherhe.Count - 1 Then
-                    elementCouper = recherhe.Remove(iEtat)
-                    recherhe = recherhe.Substring(iEtat)
-                    i = 0
-                Else
-                    elementCouper = recherhe
-                    i = iEtat
-                End If
-                Select Case elementCouper(1)
-                    Case symbSlsh
-                        Me.FileDeCommande.Enqueue(New CommandeXDouble(elementCouper))
-                    Case symbSlashEtoile
-                        Me.FileDeCommande.Enqueue(New CommandeXEtoile(elementCouper))
-                    Case Else
-                        Me.FileDeCommande.Enqueue(New CommandeXSimple(elementCouper))
-                End Select
-            End If
-            i += 1
-        End While
-
+        Dim listeStr As List(Of String) = Me.DecomposerExpression(recherche)
+        For Each expr In listeStr
+            Select Case expr(1)
+                Case symbSlsh
+                    Me.FileDeCommande.Enqueue(New CommandeXDouble(expr))
+                Case symbSlashEtoile
+                    Me.FileDeCommande.Enqueue(New CommandeXEtoile(expr))
+                Case Else
+                    Me.FileDeCommande.Enqueue(New CommandeXSimple(expr))
+            End Select
+        Next
     End Sub
 
 #Region "Méthodes"
-
     ''' <summary>
-    ''' Interroge le document XML selon les informations Xpath contenu. 
+    ''' Interroge un ElementXml selon les informations IComamndeX contenu. 
     ''' </summary>
-    ''' <returns></returns>
+    ''' <param name="element">Une ElementXml à interroger.</param>
+    ''' <returns>Une liste d'élément Xml. </returns>
+    ''' <remarks>Un élément ne peut référer à rien.</remarks>
     Public Function Interroger(element As ElementXml) As List(Of ElementXml)
+
+        If (element Is Nothing) Then
+            Throw New ArgumentNullException("Un élément ne peut référer à rien.")
+        End If
+
         If (Me.FileDeCommande.Count = 0) Then
             Return New List(Of ElementXml)
         End If
+
         'On récupère la première commande
         Dim commandeEnCours As ICommandeX = Me.FileDeCommande.Dequeue()
 
-        'FileResultat permettant de conserver les résultats de chaque recherche à toutes 
+        'FileResultat permettent de conserver les résultats de chaque recherche à toutes 
         'les itérations. 
         'On effectue la première commande sur l'élément.
         Dim fileTempo As Queue(Of ElementXml) = commandeEnCours.Rechercher(element)
@@ -119,7 +133,58 @@ Public Class ExprXPath
         Return listeRetour
     End Function
 
+    ''' <summary>
+    ''' Décompose une expression en un tableau de string.
+    ''' </summary>
+    ''' <param "expression">Une expression à décomposer </param>
+    ''' <returns>Une liste de string si l'expression est valide, 
+    ''' sinon une liste vide.</returns>
+    ''' <remarks>Une chaine ne peut référer à rien.</remarks>
+    Private Function DecomposerExpression(expression As String) As List(Of String)
+        If (expression Is Nothing) Then
+            Throw New ArgumentException("Une expression ne peut référer à rien.")
+        End If
 
+        Dim i As Integer = 0
+
+        Dim listeRetour As List(Of String) = New List(Of String)
+
+        While (i < expression.Count)
+            If (expression(i) <> symbSlsh) Then
+                'On effectue une sous expression :
+                Dim iEtat As Integer = i
+                Dim stringTempo As String = ""
+                While (expression(iEtat) <> symbSlsh AndAlso iEtat <> expression.Count - 1)
+                    iEtat += 1
+                End While
+                Dim elementCouper As String
+                If iEtat <> expression.Count - 1 Then
+                    elementCouper = expression.Remove(iEtat)
+                    expression = expression.Substring(iEtat)
+                    i = 0
+                Else
+                    elementCouper = expression
+                    i = iEtat
+                End If
+                Dim estOk As Boolean = True
+                Select Case elementCouper(1)
+                    Case symbSlsh
+                        estOk = RegexMatch(CommandeXDouble.RegxDouble, elementCouper)
+                    Case symbSlashEtoile
+                        estOk = RegexMatch(CommandeXEtoile.RegxEtoile, elementCouper)
+                    Case Else
+                        estOk = RegexMatch(CommandeXSimple.RegxSimple, elementCouper)
+                End Select
+                If (estOk) Then
+                    listeRetour.Add(elementCouper)
+                Else
+                    Return New List(Of String)
+                End If
+            End If
+                i += 1
+        End While
+        Return listeRetour
+    End Function
 #End Region
 
 End Class

@@ -4,91 +4,95 @@
 ' Nom de l'auteur : Mathieu Morin et Mathieu Pelletier
 '            Date : 30/04/19
 '=================================================================================================
-Imports System.Xml
 
 ''' <summary>
-''' Représente un document xml sérialisé
+''' Représente un document Xml sérialisé
 ''' composé de sous-éléments de type "ElementXml".
 ''' </summary>
 Public Class DocumentXml
 
 #Region "Constantes"
-    Private Const espace As String = "  "
+    ''' <summary>
+    ''' Le nom donné à la MetaRacine. 
+    ''' </summary>
+    Private Const nomMetaRacine As String = "DocumentXml"
+
+    ''' <summary>
+    ''' L'écart lors de l'affichage des balises. 
+    ''' </summary>
+    Private Const ecartBalise As String = "  "
+
 #End Region
+
 
 #Region "Attributs"
-
     ''' <summary>
-    ''' Représente le premier élément Xml du fichier. 
+    ''' Représente le premier élément Xml du fichier.
     ''' </summary>
     Private _racine As ElementXml
-
-    ''' <summary>
-    ''' Le nombre d'élément contenu dans le fichier. 
-    ''' </summary>
-    Private _nbElements As Integer
 #End Region
+
 
 #Region "Propriétés"
     ''' <summary>
     ''' Accède à la racine du document XML. 
     ''' </summary>
     ''' <returns>La racine du document XML.</returns>
+    ''' <remarks>La racine ne peut référer à rien.</remarks>
     Public Property Racine As ElementXml
         Get
             Return Me._racine
         End Get
         Private Set(value As ElementXml)
+            'On valide que l'élément ne soit pas Nothing : 
+            If (value Is Nothing) Then
+                Throw New ArgumentNullException("Un élément ne peut être initialisé à Rien")
+            End If
             Me._racine = value
         End Set
     End Property
 
 
     ''' <summary>
-    ''' Accède aux nombre d'éléments cotenu dans le fichier
+    ''' Accède aux nombre d'éléments contenu dans le fichier.
     ''' </summary>
     ''' <returns>Le nombre d'éléments contenu dans le fichier.</returns>
     Public ReadOnly Property NbElements As Integer
         Get
-            '***************** FAIRE DEKOI DE MIEU EVENTUELLEMENT ,MAIS JPENSE QUE LA METHODE PX ETRE UTILSE DONC JAL MODIFIE PAS TT SUITE
-            Return ListerEnProfondeurPrefixRec(Racine).Count
+            Return ListerEnProfondeurPrefixRec(Me.Racine).Count
         End Get
     End Property
 
+
+    ''' <summary>
+    ''' Accède aux nombres d'attributs contenu dans le ficier.
+    ''' </summary>
+    ''' <returns>Le nombre d'attributs dans le fichier.</returns>
     Public ReadOnly Property NbAttributs As Integer
         Get
-            '***************** FAIRE DEKOI DE MIEU EVENTUELLEMENT ,MAIS JPENSE QUE LA METHODE PX ETRE UTILSE DONC JAL MODIFIE PAS TT SUITE
-            Dim liste As List(Of Attribut) = New List(Of Attribut)
-            Dim resultat As List(Of Attribut) = ListerAttributsEnProfondeurRec(Racine, liste)
-            Return resultat.Count
+            Return ListerAttributsEnProfondeurRec(Me.Racine).Count
         End Get
     End Property
 
+    ''' <summary>
+    ''' Retourne la profondeur du fichier. 
+    ''' </summary>
+    ''' <returns>La profondeur du fichier.</returns>
     Public ReadOnly Property Profondeur As Integer
         Get
-            Return CompterProfondeur(Racine)
+            Return CompterProfondeur(Me.Racine)
         End Get
     End Property
 #End Region
 
+
 #Region "Constructeur"
-
-    ''' <summary>
-    ''' Constructeur de base.
-    ''' Il crée un document vide sans racine, ni aucun élément. 
-    ''' </summary>
-    Public Sub New()
-        Me.Racine = Nothing
-
-    End Sub
-
     ''' <summary>
     ''' Constructeur paramétré. 
     ''' Il crée un document avec un premier élément. 
     ''' </summary>
-    ''' <param name="racine"></param>
     Public Sub New(racine As ElementXml)
-        Me.Racine = New ElementXml("Document", New List(Of Attribut), "")
+        Me.Racine = New ElementXml(DocumentXml.nomMetaRacine, New List(Of Attribut), "")
         Me.Racine.ElemEnfants.Add(racine)
     End Sub
 #End Region
@@ -98,65 +102,86 @@ Public Class DocumentXml
 
 #Region "Méthodes privées"
     ''' <summary>
-    ''' Permet de mettre l'arbre en ordre Prefix dans une liste pour l'affichage.
+    ''' Permet de  lister en profondeur préfixe les éléments d'un document. 
     ''' </summary>
-    ''' <param name="noeudCourant">Le nœud ou démarrer le parcour de l'arbre.</param>
-    ''' <returns>retourne une liste d'ElementXml</returns>
-
-    Private Function ListerEnProfondeurPrefixRec(noeudCourant As ElementXml) As List(Of ElementXml)
-        Dim liste As List(Of ElementXml) = New List(Of ElementXml)({noeudCourant})
-        If noeudCourant Is Nothing Then
+    ''' <param name="elemCourant">L'élément où démarer la recherhce.</param>
+    ''' <returns>Une liste d'ElementXml. </returns>
+    ''' <remarks>Un élément ne peut référer à rien.</remarks>
+    Private Function ListerEnProfondeurPrefixRec(elemCourant As ElementXml) As List(Of ElementXml)
+        Dim liste As List(Of ElementXml) = New List(Of ElementXml)({elemCourant})
+        If elemCourant Is Nothing Then
             Return New List(Of ElementXml)
         Else
-
-            For Each fils As ElementXml In noeudCourant.ElemEnfants
+            For Each fils As ElementXml In elemCourant.ElemEnfants
                 liste.AddRange(ListerEnProfondeurPrefixRec(fils))
             Next
             Return liste
         End If
     End Function
 
-    Private Function ListerAttributsEnProfondeurRec(noeudCourant As ElementXml, ByRef liste As List(Of Attribut)) As List(Of Attribut)
-        If noeudCourant Is Nothing Then
+    ''' <summary>
+    ''' Permet de lister les attributs et attributs enfant en profondeur récurssive.
+    ''' </summary>
+    ''' <param name="elemCourant">L'ElementXml courant.</param>
+    ''' <returns>Une liste de tous les attributs</returns>
+    ''' <remarks>Un élément ne peut référer à rien.</remarks>
+    Private Function ListerAttributsEnProfondeurRec(elemCourant As ElementXml) As List(Of Attribut)
+        If elemCourant Is Nothing Then
             Return New List(Of Attribut)
         Else
-            liste.AddRange(noeudCourant.Attributs)
+            Dim listeRetour As List(Of Attribut) = New List(Of Attribut)
+            listeRetour.AddRange(elemCourant.Attributs)
 
-            For Each fils As ElementXml In noeudCourant.ElemEnfants
-                ListerAttributsEnProfondeurRec(fils, liste)
+            For Each fils As ElementXml In elemCourant.ElemEnfants
+                listeRetour.AddRange(ListerAttributsEnProfondeurRec(fils))
             Next
-            Return liste
+            Return listeRetour
         End If
     End Function
 
 
-    Private Function ListerEnStrRec(noeudCourant As ElementXml, nbTab As Integer) As String
+    ''' <summary>
+    ''' Génère un string représentant un DocumentXml par le biais d'une recherche récurssive. 
+    ''' </summary>
+    ''' <param name="elemCourant">L'élément courant traité. </param>
+    ''' <param name="nbDecalage">Le nombre de décalages à effectuer lors de l'affichage. </param>
+    ''' <returns></returns>
+    Private Function ListerEnStrRec(elemCourant As ElementXml, nbDecalage As Integer) As String
 
         'Si enfant contient du texte : 
-        If (noeudCourant.ContenuTextuel IsNot Nothing) Then
+        If (elemCourant.ContenuTextuel IsNot Nothing) Then
             'On ajoute comme contenu textuel 
-            Return StrDup(nbTab, "   ") & noeudCourant.EnBalise() & " " & noeudCourant.ContenuTextuel & " " _
-                        & noeudCourant.EnBalise(True) & vbCrLf
+            Return StrDup(nbDecalage, DocumentXml.ecartBalise) & elemCourant.EnBalise() & DocumentXml.ecartBalise & elemCourant.ContenuTextuel & " " _
+                        & elemCourant.EnBalise(True) & vbCrLf
         Else
-            Dim strBalise As String = StrDup(nbTab, "   ") & noeudCourant.EnBalise() & vbCrLf
-            nbTab += 1
+            'On liste ses enfants : 
+            Dim strBalise As String = StrDup(nbDecalage, DocumentXml.ecartBalise) & elemCourant.EnBalise() & vbCrLf
+            nbDecalage += 1
             'On parcourt les enfants si il y en a. 
-            For Each sousElem As ElementXml In noeudCourant.ElemEnfants
-                strBalise &= ListerEnStrRec(sousElem, nbTab)
+            For Each sousElem As ElementXml In elemCourant.ElemEnfants
+                strBalise &= ListerEnStrRec(sousElem, nbDecalage)
             Next
-            nbTab -= 1
+            nbDecalage -= 1
+
             'On ajoute la balise de fermeture 
-            strBalise &= StrDup(nbTab, "   ") & noeudCourant.EnBalise(True) & vbCrLf
+            strBalise &= StrDup(nbDecalage, DocumentXml.ecartBalise) & elemCourant.EnBalise(True) & vbCrLf
             Return strBalise
         End If
     End Function
 
-    Private Function CompterProfondeur(noeudCourant As ElementXml) As Integer
+    ''' <summary>
+    ''' Permet de compter la profondeur du DocumentXml courrant. 
+    ''' </summary>
+    ''' <param name="elemCourant">Un ElementXml</param>
+    ''' <returns>La profondeur du DocumentXml.</returns>
+    Private Function CompterProfondeur(elemCourant As ElementXml) As Integer
         Dim valeurMax = 0
-        If noeudCourant Is Nothing Then
+
+        'Si l'élément courant est vide :
+        If elemCourant Is Nothing Then
             Return valeurMax
         Else
-            For Each fils As ElementXml In noeudCourant.ElemEnfants
+            For Each fils As ElementXml In elemCourant.ElemEnfants
                 Dim profondeurFils As Integer = 1 + CompterProfondeur(fils)
                 If (profondeurFils > valeurMax) Then
                     valeurMax = profondeurFils
@@ -170,25 +195,26 @@ Public Class DocumentXml
 
 #End Region
 
-#Region "Méthodes publics "
-
-
+#Region "Méthodes publiques"
     ''' <summary>
-    ''' Permet de récupérer les informations du document sous forme de chaine de caractère.
+    ''' Génère une chaine de caractère contenant les du DocumentXml. 
     ''' </summary>
     ''' <returns>Une chaine de caractère représentant les statistiques du document.</returns>
     Public Function ObtenirStats() As String
         Return String.Format("Le nom de la racine est : {0}" & vbCrLf &
-                             "le nombre d'élément du document est : {1}" & vbCrLf &
+                             "Le nombre d'élément du document est : {1}" & vbCrLf &
                              "Le nombre d'attributs est : {2}" & vbCrLf &
-                             "La profondeur du document est : {3}", Me.Racine.Nom, Me.NbElements, Me.NbAttributs, Me.Profondeur)
+                             "La profondeur du document est : {3}", Me.Racine.ElemEnfants(0).Nom,
+                                                                    Me.NbElements - 1,
+                                                                    Me.NbAttributs,
+                                                                    Me.Profondeur)
     End Function
 
 
     ''' <summary>
-    ''' Affiche le document XMl sous une forme lisible en chaine de caractère. 
+    ''' Génère un chaine de caractère du DocumentXml et de ses éléments sous une forme lisible. 
     ''' </summary>
-    ''' <returns>Une chaine de caractère rerpésentant chacun des noeuds du document.</returns>
+    ''' <returns>Une chaine de caractère rerpésentant chacun des ÉlémentsXml du document.</returns>
     Public Overrides Function ToString() As String
         Return Me.ListerEnStrRec(Me.Racine.ElemEnfants(0), 0)
     End Function

@@ -7,47 +7,46 @@
 '=================================================================================================
 
 
-
 ''' <summary>
-''' Représente un élément XML avec son nom,
-''' ses attributs XML, le texte qu'il contient ou ses sous-éléments. 
+''' Représente un élément Xml avec son nom,
+''' ses attributs, le texte qu'il contient ou ses sous-éléments. 
 ''' </summary>
 Public Class ElementXml
 
 #Region "Attributs"
 
     ''' <summary>
-    ''' Le nom de l'élément XML. 
+    ''' Représente le nom de l'élément.
     ''' </summary>
     Private _nom As String
 
     ''' <summary>
-    ''' Attributs de l'élément XML. 
+    ''' Représente les attributs de l'élément Xml. 
     ''' </summary>
     Private _attributs As List(Of Attribut)
 
     ''' <summary>
-    ''' Liste des sous-éléments. 
+    ''' Représente la liste des sous-éléments, s'il en contient.
     ''' </summary>
     Private _elemEnfants As List(Of ElementXml)
 
     ''' <summary>
-    ''' Contenu textuel de l'élément XML(s'il en contient). 
+    ''' Représente le contenu textuel de l'élément Xml, s'il en contient. 
     ''' Sinon, initialisé à Nothing. 
     ''' </summary>
     Private _contenuTextuel As String
 
+#End Region
 
-    ''' <summary>
-    ''' Nombre d'éléments enfants, s'il en contient.  
-    ''' </summary>
-    Private _nbElementsEnfants As Integer
+#Region "Propriétés"
+
+
 
     ''' <summary>
     ''' Permet d'accéder au nom de l'élément. 
     ''' </summary>
-    ''' <remarks>Le nom ne doit pas être vide.</remarks>
     ''' <returns>Le nom de l'élément.</returns>
+    ''' <remarks>Le nom ne peut être vide ou référer à rien.</remarks>
     Public Property Nom As String
         Get
             Return Me._nom
@@ -72,15 +71,16 @@ Public Class ElementXml
     ''' Permet d'accéder aux attributs. 
     ''' </summary>
     ''' <returns>La liste des attributs.</returns>
+    '''<remarks>Une liste d'attributs ne peut référer à rien.</remarks>
     Public Property Attributs As List(Of Attribut)
         Get
             Return Me._attributs
         End Get
-        Set(value As List(Of Attribut))
+        Private Set(value As List(Of Attribut))
 
-            'La liste ne peut-être à nothing.  
+            'La liste ne peut-être initialisé à nothing.  
             If (value Is Nothing) Then
-                Throw New ArgumentNullException("Une liste d'attributs ne peut référé à rien")
+                Throw New ArgumentNullException("Une liste d'attributs ne peut référé à rien.")
             End If
 
             Me._attributs = value
@@ -88,14 +88,15 @@ Public Class ElementXml
     End Property
 
     ''' <summary>
-    ''' Permet d'accéder à la liste des éléments enfants de l'élément présent.  
+    ''' Permet d'accéder à la liste des éléments enfants de l'élément.  
     ''' </summary>
-    ''' <returns></returns>
+    ''' <returns>La liste des éléments enfants.</returns>
+    '''<remarks>Une liste d'éléements enfants ne peut référer à rien.</remarks>
     Public Property ElemEnfants As List(Of ElementXml)
         Get
             Return _elemEnfants
         End Get
-        Set(value As List(Of ElementXml))
+        Private Set(value As List(Of ElementXml))
             If (value Is Nothing) Then
                 Throw New ArgumentNullException("Une liste d'enfant ne peut référer à rien.")
             End If
@@ -104,30 +105,28 @@ Public Class ElementXml
     End Property
 
     ''' <summary>
-    ''' Le contenu textuel contenu dans l'élément XML. 
+    ''' Le contenu textuel contenu dans l'ElementXml.. 
     ''' </summary>
-    ''' <returns></returns>
+    ''' <returns>Le contenu textuel, s'il en a.
+    ''' Sinon, retourne Rien.</returns>
+    ''' <remarks>Le contenu textuel ne peut être vide.</remarks>
     Public Property ContenuTextuel As String
         Get
             Return _contenuTextuel
         End Get
-        Set(value As String)
+        Private Set(value As String)
             'Le contenu textuel peut être vide
             If (value IsNot Nothing) Then
                 value = value.Trim()
             End If
-
             Me._contenuTextuel = value
         End Set
     End Property
 
-
-
-
     ''' <summary>
-    ''' Permet d'accéder aux nombre d'éléments enfants. 
+    ''' Permet d'accéder au nombre d'éléments enfants. 
     ''' </summary>
-    ''' <returns>Le nombre d'éléments enfants de l'élémentXml.</returns>
+    ''' <returns>Le nombre d'éléments enfants de l'ElementXml.</returns>
     Public ReadOnly Property NbElementsEnfants As Integer
         Get
             Return Me._elemEnfants.Count
@@ -138,26 +137,27 @@ Public Class ElementXml
 
 #End Region
 
+
 #Region "Constructeur"
     ''' <summary>
-    ''' Constructeur de base.
-    ''' Crée un élément XML sans enfant et sans contenu textuel. 
+    ''' Constructeur paramétré privé.
+    ''' Crée un ElementXml sans enfant et sans contenu textuel. 
     ''' </summary>
     ''' <param name="nom">Le nom de l'élément.</param>
-    ''' <param name="listeAttribut">La liste des attributs.</param>
-    Private Sub New(nom As String, listeAttribut As List(Of Attribut))
+    ''' <param name="listeAttributs">La liste des attributs.</param>
+    Private Sub New(nom As String, listeAttributs As List(Of Attribut))
         Me.Nom = nom
-        Me.Attributs = listeAttribut
+        Me.Attributs = listeAttributs
         Me.ContenuTextuel = Nothing
         Me.ElemEnfants = New List(Of ElementXml)
     End Sub
 
     ''' <summary>
-    ''' Constructeur paramétré permettant de créer un "ElementXml" contenant 
+    ''' Constructeur paramétré permettant de créer un ElementXml possédant
     ''' un contenu textuel. 
     ''' </summary>
     ''' <param name="nom">Le nom de l'élément.</param>
-    ''' <param name="listeAttributs">Liste des attributs.</param>
+    ''' <param name="listeAttributs">La liste des attributs.</param>
     ''' <param name="contenuTextuel">Le contenu textuel.</param>
     Public Sub New(nom As String, listeAttributs As List(Of Attribut), contenuTextuel As String)
         Me.New(nom, listeAttributs)
@@ -167,7 +167,7 @@ Public Class ElementXml
 
     ''' <summary>
     ''' Constructeur permettant de créer un "ElementXml"
-    ''' contenant des éléments enfants.
+    ''' possédant des éléments enfants.
     ''' </summary>
     ''' <param name="nom">Le nom de l'élément.</param>
     ''' <param name="listeAttributs">Liste des attributs.</param>
@@ -180,20 +180,25 @@ Public Class ElementXml
 
 #End Region
 
+
 #Region "Méthodes"
 
     ''' <summary>
-    ''' Récupère une représentation de la balise sous forme de chaine de caractère. 
+    ''' Génère une représentation de la balise sous forme de chaine de caractère. 
     ''' </summary>
-    ''' <param name="estFermante">Indique si la balise est une balise d'ouverture ou de fermeture</param>
+    ''' <param name="estFermante">Indique si la balise est une balise d'ouverture ou de fermeture.</param>
     ''' <returns>
     ''' Une chaine de caractère représentant une balise ouvrante ou fermante. 
     ''' </returns>
     Public Function EnBalise(Optional estFermante As Boolean = False) As String
         If (Not estFermante) Then
             Dim strAtt As String = ""
-            For Each att As Attribut In Me.Attributs
-                strAtt &= att.ToString() & " "
+            Dim nbElemEnfants = Me.Attributs.Count
+            For iAtt = 0 To nbElemEnfants - 1
+                strAtt &= Me.Attributs(iAtt).ToString()
+                If (iAtt <> nbElemEnfants - 1) Then
+                    strAtt &= " "
+                End If
             Next
             Return String.Format("<{0} {1}>", Me.Nom, strAtt)
         Else
@@ -203,7 +208,7 @@ Public Class ElementXml
 
     ''' <summary>
     ''' Retourne un string comprenant le nom, les attributs et le nombre de sous-éléments de 
-    ''' l'ÉlémentXml. 
+    ''' l'ElementXml. 
     ''' </summary>
     ''' <returns>Un string au format du nom de l'élément.</returns>
     Public Overrides Function ToString() As String
@@ -221,4 +226,5 @@ Public Class ElementXml
     End Function
 
 #End Region
+
 End Class

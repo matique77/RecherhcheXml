@@ -1,31 +1,63 @@
-﻿''' <summary>
-''' Classe représentant une commande XPath. 
+﻿'=================================================================================================
+'  Nom du fichier : CommandeXDouble.vb
+'         Classe  : CommandeXDouble
+' Nom de l'auteur : Mathieu Morin et Mathieu Pelletier
+'            Date : 02/05/19
+'=================================================================================================
+''' <summary>
+''' Classe représentant une commande XPath // et implémentant l'interface
+''' ICommandeX. 
 ''' </summary>
 Public Class CommandeXDouble
     Implements ICommandeX, IFiltreX
 
-
 #Region "Constante"
-    Private Const regxDouble As String = "^//.[^/]+$"
+    ''' <summary>
+    ''' Expression régulière validant la forme de la syntaxe //. 
+    ''' </summary>
+    Public Const RegxDouble As String = "^//.[^/]+$"
 #End Region
 
 #Region "Attributs"
+
+    ''' <summary>
+    ''' Nom de la commande
+    ''' </summary>
     Private ReadOnly _nom As String
+
+    ''' <summary>
+    ''' Le filtre appliqué à la commande
+    ''' </summary>
     Private ReadOnly _filtre As String
 #End Region
 
 #Region "Propriétés"
+    ''' <summary>
+    ''' Accède au nom de la commande 
+    ''' </summary>
+    ''' <returns>Le nom de la commande.</returns>
     Public ReadOnly Property Nom As String Implements ICommandeX.Nom
         Get
             Return Me._nom
         End Get
     End Property
+
+    ''' <summary>
+    ''' Accède au filtre de la commande 
+    ''' </summary>
+    ''' <returns>Le filte de la commande, si elle est filtrée,
+    ''' sinon retourne une chaine vide.
+    ''' </returns>
     Public ReadOnly Property Filtre As String Implements IFiltreX.Filtre
         Get
             Return Me._filtre
         End Get
     End Property
 
+    ''' <summary>
+    ''' Determine si l'élément est filtré. 
+    ''' </summary>
+    ''' <returns>Vrai si l'élément est filtré, sinon Faux.</returns>
     Public ReadOnly Property EstFiltree As Boolean Implements IFiltreX.EstFiltree
         Get
             Return Me.Filtre <> ""
@@ -35,16 +67,28 @@ Public Class CommandeXDouble
 
 #Region "Constructeur"
     ''' <summary>
-    ''' Permet de creer une CommandeXDouble avec le nom de l'élément de base. 
+    ''' Permet de créer une CommandeXDouble à partir de l'expression. 
     ''' </summary>
+    ''' <param name="expression">Une expression Xpath débutant par //.</param>
+    ''' <remarks>L'expression ne peut être vide ou référer à rien.</remarks>
     Public Sub New(expression As String)
-        StringValide(expression)
-        'On vérifie que l'expression soit valider : 
-        If (Not RegexMatch(regxDouble, expression)) Then
+        'On récupère un string Valide. 
+        If (expression Is Nothing) Then
+            Throw New ArgumentNullException("Une expression de caractère ne référer à rien.")
+        End If
+
+        expression = expression.Trim()
+
+        If (expression = "") Then
+            Throw New ArgumentException("Une expression ne peut être vide.")
+        End If
+
+        'On vérifie que l'expression soit valide 
+        If (Not RegexMatch(CommandeXDouble.RegxDouble, expression)) Then
             Throw New ArgumentException("L'expression n'est pas conforme.")
         End If
 
-        'On récupère le nom : 
+        'On récupère le nom 
         expression = expression.Substring(2)
         If (RegexMatch(ExprXPath.RegxFiltre, expression)) Then
             Dim nom As String = ""
@@ -70,9 +114,13 @@ Public Class CommandeXDouble
     ''' <summary>
     ''' Effectue une recherhe à partir de l'élément reçu en paramètre et du nom de l'élément.
     ''' </summary>
-    ''' <param name="nomElem">L'élément à partir duquel chercher.</param>
-    ''' <returns></returns>
+    ''' <param name="elem">L'élément à partir duquel chercher.</param>
+    ''' <returns>Une file d'ElementXml</returns>
+    ''' <remarks>Un élément ne peut référé à rien</remarks>
     Public Function Rechercher(elem As ElementXml) As Queue(Of ElementXml) Implements ICommandeX.Rechercher
+        If (elem Is Nothing) Then
+            Throw New ArgumentNullException("Un élément ne peut référer à rien. ")
+        End If
         Dim fileRetour As Queue(Of ElementXml) = New Queue(Of ElementXml)
         Me.RechercherRec(elem, fileRetour)
         Return fileRetour
@@ -82,8 +130,8 @@ Public Class CommandeXDouble
     ''' Effectue une recherche recursive tout en ajoutant les éléments trouvés
     ''' dans une liste passée en paramètre. 
     ''' </summary>
-    ''' <param name="elem"></param>
-    ''' <param name="listeRetour"></param>
+    ''' <param name="elem">L'élément rechercher.</param>
+    ''' <param name="fileRetour">Une file d'élément.</param>
     Private Sub RechercherRec(elem As ElementXml, fileRetour As Queue(Of ElementXml))
         'Cas simple : 
         If elem.NbElementsEnfants = 0 Then

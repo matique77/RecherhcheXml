@@ -1,11 +1,19 @@
-﻿Imports System.Text.RegularExpressions
+﻿'=================================================================================================
+'  Nom du fichier : ICommandeX.vb
+'      Interface  : ICommandeX
+' Nom de l'auteur : Mathieu Morin et Mathieu Pelletier
+'            Date : 02/05/19
+'==================================================================================================
 ''' <summary>
 ''' Interface implémentant une commande XPath. 
 ''' </summary>
 Public Interface ICommandeX
 
 #Region "Propriétés"
-    'Le nom de la commande.
+    ''' <summary>
+    ''' Le nom de la commande.
+    ''' </summary>
+    ''' <returns></returns>
     ReadOnly Property Nom As String
 
 #End Region
@@ -16,9 +24,8 @@ Public Interface ICommandeX
     ''' Effectue une recherhe à partir du nom de l'élément passé en paramètre. 
     ''' </summary>
     ''' <param name="nomElem">Le nom de l'élément.</param>
-    ''' <returns></returns>
+    ''' <returns>Une file d'ElementXml.</returns>
     Function Rechercher(nomElem As ElementXml) As Queue(Of ElementXml)
-
 #End Region
 
 End Interface
