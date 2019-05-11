@@ -21,7 +21,7 @@ Public Class ExprXPath
     Private Const symbSlsh As Char = "/"c
 
     ''' <summary>
-    ''' Représente le symbole /*
+    ''' Représente le symbole *
     ''' </summary>
     Private Const symbSlashEtoile As Char = "*"c
 
@@ -60,16 +60,15 @@ Public Class ExprXPath
     Public Sub New(recherche As String)
 
         If (recherche Is Nothing) Then
-            Throw New ArgumentNullException("Une expression de caractère ne peut référer à rien.")
+            Throw New ArgumentNullException("Une expression ne peut référer à rien.")
         End If
 
         recherche = recherche.Trim()
-        'On décompose le string en commandes.
-
-        'Pour ce faire, la recherche est séparé par le symbole / et divisé en sous recherche :
 
         'On parcourt le string : 	        
         Me.FileDeCommande = New Queue(Of ICommandeX)
+
+        'Pour ce faire, la recherche est séparée par le symbole / et divisée en sous recherche. 
         Dim listeStr As List(Of String) = Me.DecomposerExpression(recherche)
         For Each expr In listeStr
             Select Case expr(1)
@@ -88,7 +87,7 @@ Public Class ExprXPath
     ''' Interroge un ElementXml selon les informations IComamndeX contenu. 
     ''' </summary>
     ''' <param name="element">Une ElementXml à interroger.</param>
-    ''' <returns>Une liste d'élément Xml. </returns>
+    ''' <returns>Une liste d'éléments Xml. </returns>
     ''' <remarks>Un élément ne peut référer à rien.</remarks>
     Public Function Interroger(element As ElementXml) As List(Of ElementXml)
 
@@ -134,9 +133,9 @@ Public Class ExprXPath
     End Function
 
     ''' <summary>
-    ''' Décompose une expression en un tableau de string.
+    ''' Décompose une expression en une liste de string.
     ''' </summary>
-    ''' <param "expression">Une expression à décomposer </param>
+    ''' <param "expression">Une expression à décomposer</param>
     ''' <returns>Une liste de string si l'expression est valide, 
     ''' sinon une liste vide.</returns>
     ''' <remarks>Une chaine ne peut référer à rien.</remarks>

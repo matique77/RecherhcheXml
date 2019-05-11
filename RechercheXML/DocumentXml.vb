@@ -54,7 +54,7 @@ Public Class DocumentXml
 
 
     ''' <summary>
-    ''' Accède aux nombre d'éléments contenu dans le fichier.
+    ''' Accède au nombre d'éléments contenu dans le fichier.
     ''' </summary>
     ''' <returns>Le nombre d'éléments contenu dans le fichier.</returns>
     Public ReadOnly Property NbElements As Integer
@@ -65,7 +65,7 @@ Public Class DocumentXml
 
 
     ''' <summary>
-    ''' Accède aux nombres d'attributs contenu dans le ficier.
+    ''' Accède au nombre d'attributs contenu dans le ficier.
     ''' </summary>
     ''' <returns>Le nombre d'attributs dans le fichier.</returns>
     Public ReadOnly Property NbAttributs As Integer
