@@ -1,5 +1,10 @@
 ﻿Imports System.Text.RegularExpressions
-
+'=================================================================================================
+'  Nom du fichier : UtilitaireRegx.vb
+'         Module  : UtilitaireRegx
+' Nom de l'auteur : Mathieu Morin
+'            Date : 01/04/19
+'=================================================================================================
 Module UtilitaireRegx
     ''' <summary>
     ''' Vérifie si une expression régulière est contenu.
